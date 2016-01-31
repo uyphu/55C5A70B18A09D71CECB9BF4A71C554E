@@ -76,5 +76,5 @@ public class Constant {
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
-	public static final int MAX_VIEW = 2000000;
+	public static final int MAX_VIEW = 1500000;
 }

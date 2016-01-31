@@ -190,9 +190,10 @@ public class YoutubeUtil {
 	}
 	
 	public static List<Tube> getHotTube() {
+		List<Tube> tubes = new ArrayList<Tube>();
 		try {
-			List<Tube> tubes = new ArrayList<Tube>();
 			String pageToken = null;
+			int count = 0;
 			do {
 				URL url = getSearchUrl(pageToken);
 				JSONObject json = callYoutube(url);
@@ -217,16 +218,18 @@ public class YoutubeUtil {
 						}
 					}
 				}
+				System.out.println(count);
+				count++;
 			} while (true);
-			
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
-		return null;
+		return tubes;
 	}
 	
 	public static boolean hasGoodComment(String videoId) {
 		try {
+			int count = 0;
 			do {
 				String pageToken = null;
 				URL url = getCommentThreadUrl("snippet", videoId, pageToken);
@@ -238,6 +241,7 @@ public class YoutubeUtil {
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject item = new JSONObject(jsonArray.get(i).toString());
 							item = new JSONObject(item.get("snippet").toString());
+							item = new JSONObject(item.get("topLevelComment").toString());
 							item = new JSONObject(item.get("snippet").toString());
 							String textDisplay = item.getString("textDisplay");
 							if (hasGoodWord(textDisplay)) {
@@ -246,7 +250,8 @@ public class YoutubeUtil {
 						}
 					}
 				}
-			} while (true);
+				count ++;
+			} while (count < 20);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
@@ -271,9 +276,10 @@ public class YoutubeUtil {
 	public static void main(String[] args) {
 //		Tube tube = getTube("DQkrfti22mo");
 //		System.out.println(tube.toString());
-		List<Tube> tubes =  getHotTube();
-		for (Tube tube : tubes) {
-			System.out.println(tube.toString());
-		}
+//		List<Tube> tubes =  getHotTube();
+//		System.out.println(tubes.size());
+//		for (Tube tube : tubes) {
+//			System.out.println(tube.toString());
+//		}
 	}
 }
