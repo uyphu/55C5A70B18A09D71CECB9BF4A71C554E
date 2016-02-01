@@ -12,12 +12,14 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
-import com.ltu.yealtube.entity.TubeStatistics;
+import com.ltu.yealtube.entity.Statistics;
+import com.ltu.yealtube.entity.Tube;
 
 public abstract class AbstractDao<T> implements Dao<T> {
 
 	static {
-		ObjectifyService.register(TubeStatistics.class);
+		ObjectifyService.register(Tube.class);
+		ObjectifyService.register(Statistics.class);
 	}
 
 	public static Objectify ofy() {

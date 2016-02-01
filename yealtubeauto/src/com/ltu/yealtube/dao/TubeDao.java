@@ -5,16 +5,26 @@ import java.util.Map;
 
 import com.google.api.server.spi.response.CollectionResponse;
 import com.googlecode.objectify.cmd.Query;
-import com.ltu.yealtube.domain.Tube;
-import com.ltu.yealtube.entity.TubeStatistics;
+import com.ltu.yealtube.constants.Constant;
+import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
+import com.ltu.yealtube.exeptions.ErrorCode;
+import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
-public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
+/**
+ * The Class TubeTubeDao.
+ * @author uyphu
+ */
+public class TubeDao extends AbstractDao<Tube> {
 	
-	private static TubeStatisticsDao instance = null;
+	/** The instance. */
+	private static TubeDao instance = null;
 
-	public TubeStatisticsDao() {
-		super(TubeStatistics.class);
+	/**
+	 * Instantiates a new tube Tube dao.
+	 */
+	public TubeDao() {
+		super(Tube.class);
 	}
 
 	@Override
@@ -29,9 +39,14 @@ public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
 		
 	}
 	
-	public static TubeStatisticsDao getInstance() {
+	/**
+	 * Gets the single instance of TubeTubeDao.
+	 *
+	 * @return single instance of TubeTubeDao
+	 */
+	public static TubeDao getInstance() {
 		if (instance == null) {
-			instance = new TubeStatisticsDao();
+			instance = new TubeDao();
 		}
 		return instance;
 	}
@@ -50,9 +65,9 @@ public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
 			if (querySearch != null) {
 				Query<Tube> query;
 				Map<String, Object> map = new HashMap<String, Object>();
-				if (querySearch.indexOf("delFlag:") != -1) {
+				if (querySearch.indexOf("status:") != -1) {
 					String[] queries = querySearch.split(":");
-					map.put("delFlag", Long.parseLong(queries[1]));
+					map.put("status", queries[1]);
 					query = getQuery(map);
 				} else {
 					query = getQueryByName("name", querySearch);
@@ -63,24 +78,21 @@ public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
 			}
 		} catch (Exception e) {
 			throw new CommonException(ErrorCode.SYSTEM_EXCEPTION.getId(), ErrorCodeDetail.ERROR_PARSE_QUERY
-					+ Constants.STRING_EXEPTION_DETAIL + e.getMessage());
+					+ Constant.STRING_EXEPTION_DETAIL + e.getMessage());
 		}
 	}
 
+
 	/**
-	 * Search tube.
-	 * 
-	 * @param querySearch
-	 *            the query search
-	 * @param cursorString
-	 *            the cursor string
-	 * @param count
-	 *            the count
+	 * Search tubes.
+	 *
+	 * @param querySearch the query search
+	 * @param cursorString the cursor string
+	 * @param count the count
 	 * @return the collection response
-	 * @throws CommonException
-	 *             the proconco exception
+	 * @throws CommonException the common exception
 	 */
-	public CollectionResponse<Tube> searchTube(String querySearch, String cursorString, Integer count)
+	public CollectionResponse<Tube> searchTubes(String querySearch, String cursorString, Integer count)
 			throws CommonException {
 		Query<Tube> query = getQuery(querySearch);
 		return executeQuery(query, cursorString, count);
@@ -88,14 +100,16 @@ public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
 
 	/**
 	 * Gets the tube by name.
-	 * 
-	 * @param name
-	 *            the name
+	 *
+	 * @param name            the name
+	 * @param cursorString the cursor string
+	 * @param count the count
 	 * @return the tube by name
+	 * @throws CommonException the common exception
 	 */
-	public CollectionResponse<Tube> getTubeByName(String name, String cursorString, Integer count) throws CommonException {
-		if (name != null) {
-			Query<Tube> query = getQueryByName("name", name);
+	public CollectionResponse<Tube> getTubeByName(String title, String cursorString, Integer count) throws CommonException {
+		if (title != null) {
+			Query<Tube> query = getQueryByName("title", title);
 			return executeQuery(query, cursorString, count);
 		}
 		return null;
@@ -103,8 +117,8 @@ public class TubeStatisticsDao extends AbstractDao<TubeStatistics> {
 	
 	@Override
 	public CollectionResponse<Tube> list(String cursorString, Integer count) {
-		Query<Tube> query = getQuery().order("-dateAdded");
+		Query<Tube> query = getQuery().order("-createdAt");
 		return executeQuery(query, cursorString, count);
 	}
-
+	
 }
