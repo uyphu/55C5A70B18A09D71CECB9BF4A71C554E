@@ -61,7 +61,7 @@ public enum ErrorCodeDetail {
 	ERROR_USER_NOT_VALID(617, "[617] User not valid"),
 	
 	/** The error input not valid. */
-	ERROR_INPUT_NOT_VALID(618, "[618] User not valid"),
+	ERROR_INPUT_NOT_VALID(618, "[618] Input not valid"),
 	
 	/** The error query not valid. */
 	ERROR_QUERY_NOT_VALID(619, "[619] Error create query");

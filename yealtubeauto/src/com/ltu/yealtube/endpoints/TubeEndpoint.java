@@ -3,6 +3,7 @@ package com.ltu.yealtube.endpoints;
 import javax.annotation.Nullable;
 import javax.inject.Named;
 
+import com.google.api.client.http.HttpMethods;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -13,7 +14,7 @@ import com.ltu.yealtube.service.TubeService;
 
 @Api(name = "tubeendpoint", namespace = @ApiNamespace(ownerDomain = "ltu.com", ownerName = "ltu.com", packagePath = "yealtube.entity"))
 public class TubeEndpoint {
-
+	
 	/**
 	 * This method lists all the entities inserted in datastore.
 	 * It uses HTTP GET method and paging support.
@@ -24,7 +25,6 @@ public class TubeEndpoint {
 	@ApiMethod(name = "listTube")
 	public CollectionResponse<Tube> listTube(@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
-
 		TubeService service = TubeService.getInstance();
 		return service.list(cursorString, limit);
 	}
@@ -53,6 +53,19 @@ public class TubeEndpoint {
 	public Tube insertTube(Tube tube) throws CommonException {
 		TubeService service = TubeService.getInstance();
 		return service.insert(tube);
+	}
+	
+	/**
+	 * Insert from youtube.
+	 *
+	 * @param id the id
+	 * @return the tube
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "insertFromYoutube", httpMethod=HttpMethods.POST, path="insertFromYoutube")
+	public Tube insertFromYoutube(@Named("id") String id) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		return service.insert(id);
 	}
 
 	/**

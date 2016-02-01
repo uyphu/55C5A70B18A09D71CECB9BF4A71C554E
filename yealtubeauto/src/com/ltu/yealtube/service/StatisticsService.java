@@ -66,7 +66,7 @@ public class StatisticsService {
 	 * @return the statistics
 	 */
 	public Statistics insert(Statistics statistics) throws CommonException {
-		if (statistics != null && statistics.getId() != null) {
+		if (statistics != null && statistics.getId() == null) {
 			if (containsStatistics(statistics)) {
 				throw new CommonException(HttpStatusCodes.STATUS_CODE_FOUND, ErrorCodeDetail.ERROR_EXIST_OBJECT.getMsg());
 			}
@@ -135,12 +135,24 @@ public class StatisticsService {
 		return statisticsDao.find(id);
 	}
 	
+	/**
+	 * Contains statistics.
+	 *
+	 * @param statistics the statistics
+	 * @return true, if successful
+	 */
 	private boolean containsStatistics(Statistics statistics) {
 		boolean contains = true;
-		Statistics item = statisticsDao.find(statistics.getId());
-		if (item == null) {
-			contains = false;
+		if (statistics.getId() != null) {
+			Statistics item = statisticsDao.find(statistics.getId());
+			if (item == null) {
+				contains = false;
+			}
+		} else {
+			contains =  false;
 		}
 		return contains;
 	}
+	
+	public 
 }

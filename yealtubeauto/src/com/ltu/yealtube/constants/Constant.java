@@ -1,5 +1,9 @@
 package com.ltu.yealtube.constants;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Constant.
+ */
 public class Constant {
 
 	/** The Constant WEB_CLIENT_ID. */
@@ -74,7 +78,13 @@ public class Constant {
 	/** The Constant EMPTY_STRING. */
 	public static final String EMPTY_STRING = "";
 	
+	/** The Constant DATE_FORMAT. */
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 	
+	/** The Constant LONG_DATE_FORMAT. */
+	public static final String LONG_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	/** The Constant MAX_VIEW. */
 	public static final int MAX_VIEW = 1500000;
+	
 }

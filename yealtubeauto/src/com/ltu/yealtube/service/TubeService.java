@@ -1,16 +1,19 @@
 package com.ltu.yealtube.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.dao.TubeDao;
+import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
+import com.ltu.yealtube.utils.YoutubeUtil;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TubeService.
  * @author uyphu
@@ -155,6 +158,57 @@ public class TubeService {
 			contains = false;
 		}
 		return contains;
+	}
+	
+	/**
+	 * Contains tube.
+	 *
+	 * @param youtubeId the youtube id
+	 * @return true, if successful
+	 */
+	private boolean containsTube(String youtubeId) {
+		boolean contains = true;
+		if (youtubeId != null) {
+			Tube item = tubeDao.find(youtubeId);
+			if (item == null) {
+				contains = false;
+			}
+		} else {
+			return contains = false;
+		}
+		
+		return contains;
+	}
+	
+	/**
+	 * Insert.
+	 *
+	 * @param youtubeId the youtube id
+	 * @return the tube
+	 * @throws CommonException the common exception
+	 */
+	public Tube insert(String youtubeId) throws CommonException {
+		if (youtubeId != null) {
+			if (containsTube(youtubeId)) {
+				throw new CommonException(HttpStatusCodes.STATUS_CODE_FOUND, ErrorCodeDetail.ERROR_EXIST_OBJECT.getMsg());
+			} 
+			Tube tube = YoutubeUtil.getTube(youtubeId);
+			tube.setCreatedAt(Calendar.getInstance().getTime());
+			tube.setModifiedAt(Calendar.getInstance().getTime());
+			tube = tubeDao.persist(tube);
+			if (tube != null) {
+				Statistics statistics = YoutubeUtil.getStatistics(youtubeId);
+				StatisticsService service = StatisticsService.getInstance();
+				statistics = service.insert(statistics);
+				List<Statistics> list = new ArrayList<Statistics>();
+				list.add(statistics);
+				tube.setStatistics(list);
+				return tube;
+			}
+		} else {
+			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
+		}
+		return null;
 	}
 	
 }

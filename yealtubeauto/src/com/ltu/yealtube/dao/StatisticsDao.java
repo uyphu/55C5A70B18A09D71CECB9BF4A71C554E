@@ -119,5 +119,11 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 		Query<Statistics> query = getQuery().order("+createdAt");
 		return executeQuery(query, cursorString, count);
 	}
+	
+	public CollectionResponse<Statistics> listByParent(String cursorString, Integer count) {
+		Query<Statistics> query = getQuery().order("+createdAt");
+		query.project(arg0)
+		return executeQuery(query, cursorString, count);
+	}
 
 }

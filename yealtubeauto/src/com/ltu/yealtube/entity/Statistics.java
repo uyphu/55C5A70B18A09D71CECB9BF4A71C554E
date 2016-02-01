@@ -2,9 +2,13 @@ package com.ltu.yealtube.entity;
 
 import java.util.Date;
 
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
 /**
  * The Class Statistics.
@@ -12,14 +16,14 @@ import com.googlecode.objectify.annotation.Index;
  */
 @Entity
 public class Statistics {
+	
+	@Parent 
+	@Index
+	private Key<Tube> video;
 
 	/** The id. */
 	@Id
 	private Long id;
-	
-	/** The video id. */
-	@Index
-	private String videoId;
 	
 	/** The created at. */
 	@Index
@@ -61,22 +65,13 @@ public class Statistics {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the video id.
-	 *
-	 * @return the video id
-	 */
-	public final String getVideoId() {
-		return videoId;
+	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE) 
+	public final Key<Tube> getVideo() {
+		return video;
 	}
 
-	/**
-	 * Sets the video id.
-	 *
-	 * @param videoId the new video id
-	 */
-	public final void setVideoId(String videoId) {
-		this.videoId = videoId;
+	public final void setVideo(Key<Tube> video) {
+		this.video = video;
 	}
 
 	/**
@@ -205,30 +200,36 @@ public class Statistics {
 		this.rating = rating;
 	}
 
-	@Override
-	public String toString() {
-		return "Statistics [id=" + id + ", videoId=" + videoId + ", createdAt="
-				+ createdAt + ", viewCount=" + viewCount + ", likeCount="
-				+ likeCount + ", dislikeCount=" + dislikeCount
-				+ ", favoriteCount=" + favoriteCount + ", commentCount="
-				+ commentCount + ", rating=" + rating + "]";
-	}
-
 	/**
 	 * Instantiates a new statistics.
-	 *
-	 * @param videoId the video id
-	 * @param viewCount the view count
-	 * @param likeCount the like count
-	 * @param dislikeCount the dislike count
-	 * @param favoriteCount the favorite count
-	 * @param commentCount the comment count
-	 * @param rating the rating
 	 */
-	public Statistics(String videoId, int viewCount,
-			int likeCount, int dislikeCount, int favoriteCount,
-			int commentCount, float rating) {
-		this.videoId = videoId;
+	public Statistics() {
+		
+	}
+
+	@Override
+	public String toString() {
+		return "Statistics [id=" + id + ", video=" + video + ", createdAt=" + createdAt + ", viewCount=" + viewCount
+				+ ", likeCount=" + likeCount + ", dislikeCount=" + dislikeCount + ", favoriteCount=" + favoriteCount
+				+ ", commentCount=" + commentCount + ", rating=" + rating + "]";
+	}
+
+	public Statistics(Key<Tube> video, Date createdAt, int viewCount, int likeCount, int dislikeCount,
+			int favoriteCount, int commentCount, float rating) {
+		this.video = video;
+		this.createdAt = createdAt;
+		this.viewCount = viewCount;
+		this.likeCount = likeCount;
+		this.dislikeCount = dislikeCount;
+		this.favoriteCount = favoriteCount;
+		this.commentCount = commentCount;
+		this.rating = rating;
+	}
+
+	public Statistics(String videoId, Date createdAt, int viewCount, int likeCount, int dislikeCount,
+			int favoriteCount, int commentCount, float rating) {
+		this.video = Key.create(Tube.class, videoId);
+		this.createdAt = createdAt;
 		this.viewCount = viewCount;
 		this.likeCount = likeCount;
 		this.dislikeCount = dislikeCount;

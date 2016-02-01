@@ -238,6 +238,13 @@ public class Tube {
 	public final void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
+	
+	/**
+	 * Instantiates a new tube.
+	 */
+	public Tube() {
+		
+	}
 
 	/**
 	 * Instantiates a new tube.

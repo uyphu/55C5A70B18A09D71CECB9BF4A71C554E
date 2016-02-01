@@ -6,9 +6,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -16,10 +18,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.objectify.Key;
 import com.ltu.yealtube.constants.Constant;
-import com.ltu.yealtube.domain.Tube;
+import com.ltu.yealtube.entity.Statistics;
+import com.ltu.yealtube.entity.Tube;
 
 
+/**
+ * The Class YoutubeUtil.
+ * @author uyphu
+ */
 public class YoutubeUtil {
 
 	/** The Constant log. */
@@ -70,6 +78,12 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Call youtube.
+	 *
+	 * @param url the url
+	 * @return the JSON object
+	 */
 	public static JSONObject callYoutube(URL url) {
 		try {
 
@@ -103,32 +117,27 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the tube.
+	 *
+	 * @param id the id
+	 * @return the tube
+	 */
 	public static Tube getTube(String id) {
 		try {
 			Tube tube = new Tube();
-			JSONObject json = getVideo(id, "statistics");
+			JSONObject json = getVideo(id, "snippet");
 			if (json != null) {
 				JSONArray jsonArray = (JSONArray)json.get("items");
 				if (jsonArray != null) {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
-					item = new JSONObject(item.get("statistics").toString());
+					item = new JSONObject(item.get("snippet").toString());
 					tube.setId(id);
-					tube.setViewCount(Integer.parseInt(item.get("viewCount") != null ? item.get("viewCount").toString() : "0"));
-					tube.setLikeCount(Integer.parseInt(item.get("likeCount") != null ? item.get("likeCount").toString() : "0"));
-					tube.setDislikeCount(Integer.parseInt(item.get("dislikeCount") != null ? item.get("dislikeCount").toString() : "0"));
-					tube.setFavoriteCount(Integer.parseInt(item.get("favoriteCount") != null ? item.get("favoriteCount").toString() : "0"));
-					tube.setCommentCount(Integer.parseInt(item.get("commentCount") != null ? item.get("commentCount").toString() : "0"));
-					json = getVideo(id, "snippet");
-					if (json != null) {
-						jsonArray = (JSONArray)json.get("items");
-						if (jsonArray != null) {
-							item = new JSONObject(jsonArray.get(0).toString());
-							item = new JSONObject(item.get("snippet").toString());
-							tube.setName(item.getString("title"));
-							tube.setDescription(item.getString("description"));
-							return tube;
-						}
-					}
+					tube.setTitle(item.getString("title"));
+					tube.setDescription(item.getString("description"));
+					SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+					tube.setPublishedAt(format.parse(item.getString("publishedAt")));
+					return tube;
 				}
 			}
 			
@@ -139,6 +148,46 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the statistics.
+	 *
+	 * @param id the id
+	 * @return the statistics
+	 */
+	public static Statistics getStatistics(String id) {
+		try {
+			Tube tube = new Tube();
+			JSONObject json = getVideo(id, "statistics");
+			if (json != null) {
+				JSONArray jsonArray = (JSONArray)json.get("items");
+				if (jsonArray != null) {
+					JSONObject item = new JSONObject(jsonArray.get(0).toString());
+					item = new JSONObject(item.get("statistics").toString());
+					tube.setId(id);
+					Statistics statistics = new Statistics();
+					statistics.setVideo(Key.create(Tube.class, id));
+					statistics.setViewCount(Integer.parseInt(item.get("viewCount") != null ? item.get("viewCount").toString() : "0"));
+					statistics.setLikeCount(Integer.parseInt(item.get("likeCount") != null ? item.get("likeCount").toString() : "0"));
+					statistics.setDislikeCount(Integer.parseInt(item.get("dislikeCount") != null ? item.get("dislikeCount").toString() : "0"));
+					statistics.setFavoriteCount(Integer.parseInt(item.get("favoriteCount") != null ? item.get("favoriteCount").toString() : "0"));
+					statistics.setCommentCount(Integer.parseInt(item.get("commentCount") != null ? item.get("commentCount").toString() : "0"));
+					//statistics.setRating(Float.parseFloat(item.get("rating") != null ? item.get("rating").toString() : "0"));
+					return statistics;
+				}
+			}
+			
+		} catch (Exception e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the search url.
+	 *
+	 * @param pageToken the page token
+	 * @return the search url
+	 */
 	private static URL getSearchUrl(String pageToken) {
 		try {
 			Calendar calendar = Calendar.getInstance();
@@ -163,6 +212,13 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the video url.
+	 *
+	 * @param part the part
+	 * @param id the id
+	 * @return the video url
+	 */
 	public static URL getVideoUrl(String part, String id) {
 		try {
 			URL url = new URL(
@@ -175,6 +231,14 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the comment thread url.
+	 *
+	 * @param part the part
+	 * @param videoId the video id
+	 * @param pageToken the page token
+	 * @return the comment thread url
+	 */
 	public static URL getCommentThreadUrl(String part, String videoId, String pageToken) {
 		try {
 			String url = "https://www.googleapis.com/youtube/v3/commentThreads?part="
@@ -189,6 +253,11 @@ public class YoutubeUtil {
 		return null;
 	}
 	
+	/**
+	 * Gets the hot tube.
+	 *
+	 * @return the hot tube
+	 */
 	public static List<Tube> getHotTube() {
 		List<Tube> tubes = new ArrayList<Tube>();
 		try {
@@ -207,11 +276,17 @@ public class YoutubeUtil {
 							String videoId = item.getString("videoId");
 							Tube tube = getTube(videoId);
 							if (tube != null) {
-								if (tube.getViewCount() < Constant.MAX_VIEW) {
-									return tubes;
-								} else {
-									if (hasGoodComment(videoId)) {
-										tubes.add(tube);
+								Statistics statistics = getStatistics(videoId);
+								if (statistics != null) {
+									if (statistics.getViewCount() < Constant.MAX_VIEW) {
+										return tubes;
+									} else {									
+										if (hasGoodComment(videoId)) {
+											List<Statistics> list = new ArrayList<Statistics>();
+											list.add(statistics);
+											tube.setStatistics(list);
+											tubes.add(tube);
+										}
 									}
 								}
 							}
@@ -227,6 +302,12 @@ public class YoutubeUtil {
 		return tubes;
 	}
 	
+	/**
+	 * Checks for good comment.
+	 *
+	 * @param videoId the video id
+	 * @return true, if successful
+	 */
 	public static boolean hasGoodComment(String videoId) {
 		try {
 			int count = 0;
@@ -258,6 +339,12 @@ public class YoutubeUtil {
 		return false;
 	}
 	
+	/**
+	 * Checks for good word.
+	 *
+	 * @param text the text
+	 * @return true, if successful
+	 */
 	private static boolean hasGoodWord(String text) {
 		text = text.toLowerCase();
 		String[] words = { "lol", "good", "hay", "thank you", "like", "best",
@@ -273,7 +360,22 @@ public class YoutubeUtil {
 		return false;
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
+		
+		try {
+			SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+			Date date = format.parse("2015-05-23T23:01:32.000Z");
+			System.out.println(date.toString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 //		Tube tube = getTube("DQkrfti22mo");
 //		System.out.println(tube.toString());
 //		List<Tube> tubes =  getHotTube();
@@ -282,4 +384,5 @@ public class YoutubeUtil {
 //			System.out.println(tube.toString());
 //		}
 	}
+	
 }
