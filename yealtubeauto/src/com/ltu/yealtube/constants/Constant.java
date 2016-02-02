@@ -87,4 +87,11 @@ public class Constant {
 	/** The Constant MAX_VIEW. */
 	public static final int MAX_VIEW = 1500000;
 	
+	/** The Constant MAX_RECORDS. */
+	public static final int MAX_RECORDS = 10;
+	
+	/** The Constant MAX_DAYS. */
+	public static final int MAX_DAYS = 3;
+	
+	public static final int MAX_AVERAGE = 100;
 }

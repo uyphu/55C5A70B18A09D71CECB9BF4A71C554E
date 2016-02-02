@@ -29,7 +29,7 @@ public class YealTubeCronServlet extends HttpServlet {
 			System.out.println(tubes.size());
 			for (Tube tube : tubes) {
 				TubeService service = TubeService.getInstance();
-				System.out.println(tube.getId());
+				//System.out.println(tube.getId());
 				service.insert(tube.getId());
 			}
 			logger.info("End Cron Job.");

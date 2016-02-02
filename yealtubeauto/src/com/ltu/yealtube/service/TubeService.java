@@ -16,6 +16,7 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TubeService.
  * @author uyphu
@@ -128,7 +129,7 @@ public class TubeService {
 	 * @param id the id
 	 * @throws CommonException the common exception
 	 */
-	public void delete(String id) throws CommonException {
+	public void deleteWithChildren(String id) throws CommonException {
 		Tube tube = find(id);
 		if (tube != null) {
 			StatisticsDao dao = StatisticsDao.getInstance();
@@ -218,8 +219,28 @@ public class TubeService {
 		return null;
 	}
 	
+	/**
+	 * Clean data.
+	 *
+	 * @throws CommonException the common exception
+	 */
 	public void cleanData() throws CommonException {
 		tubeDao.cleanData();
+	}
+	
+	/**
+	 * Search tubes.
+	 *
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	public CollectionResponse<Tube> searchTubes(int status, String cursorString, Integer count)
+			throws CommonException {
+		String querySearch = "status:" + status;
+		return tubeDao.searchTubes(querySearch, cursorString, count);
 	}
 	
 }

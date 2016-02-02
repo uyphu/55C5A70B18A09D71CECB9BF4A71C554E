@@ -91,7 +91,7 @@ public class TubeEndpoint {
 	@ApiMethod(name = "removeTube")
 	public void removeTube(@Named("id") String id) throws CommonException {
 		TubeService service = TubeService.getInstance();
-		service.delete(id);
+		service.deleteWithChildren(id);
 	}
 	
 	@ApiMethod(name = "cleanData", httpMethod=HttpMethods.POST, path="cleanData")

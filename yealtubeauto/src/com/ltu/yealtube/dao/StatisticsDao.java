@@ -124,7 +124,7 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 	}
 	
 	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
-		Query<Statistics> query = getQuery();
+		Query<Statistics> query = getQuery().order("+createdAt");
 		query = query.ancestor(Key.create(Tube.class, parentId));
 		return executeQuery(query, cursorString, count);
 	}
