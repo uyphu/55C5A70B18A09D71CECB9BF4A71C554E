@@ -10,7 +10,6 @@ import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
-
 /**
  * The Class StatisticsService.
  * @author uyphu
@@ -166,6 +165,14 @@ public class StatisticsService {
 		return contains;
 	}
 	
+	/**
+	 * List by parent.
+	 *
+	 * @param parentId the parent id
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 */
 	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
 		return statisticsDao.listByParent(parentId, cursorString, count);
 	}

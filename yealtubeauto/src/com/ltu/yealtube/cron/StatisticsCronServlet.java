@@ -22,11 +22,17 @@ import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
 
 
+/**
+ * The Class StatisticsCronServlet.
+ * @author uyphu
+ */
 @SuppressWarnings("serial")
 public class StatisticsCronServlet extends HttpServlet {
 
+	/** The Constant logger. */
 	private static final Logger logger = Logger.getLogger(StatisticsCronServlet.class);
 	
+	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 
@@ -79,6 +85,12 @@ public class StatisticsCronServlet extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * Validate statistics.
+	 *
+	 * @param videoId the video id
+	 * @return true, if successful
+	 */
 	private boolean validateStatistics(String videoId) {
 		StatisticsService statisticsService = StatisticsService.getInstance();
 		TubeService tubeService = TubeService.getInstance();
@@ -132,4 +144,5 @@ public class StatisticsCronServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(req, resp);
 	}
+	
 }

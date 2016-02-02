@@ -12,6 +12,10 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.TubeService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TubeEndpoint.
+ */
 @Api(name = "tubeendpoint", namespace = @ApiNamespace(ownerDomain = "ltu.com", ownerName = "ltu.com", packagePath = "yealtube.entity"))
 public class TubeEndpoint {
 	
@@ -19,6 +23,8 @@ public class TubeEndpoint {
 	 * This method lists all the entities inserted in datastore.
 	 * It uses HTTP GET method and paging support.
 	 *
+	 * @param cursorString the cursor string
+	 * @param limit the limit
 	 * @return A CollectionResponse class containing the list of all entities
 	 * persisted and a cursor to the next page.
 	 */
@@ -48,6 +54,7 @@ public class TubeEndpoint {
 	 *
 	 * @param tube the entity to be inserted.
 	 * @return The inserted entity.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "insertTube")
 	public Tube insertTube(Tube tube) throws CommonException {
@@ -75,6 +82,7 @@ public class TubeEndpoint {
 	 *
 	 * @param tube the entity to be updated.
 	 * @return The updated entity.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "updateTube")
 	public Tube updateTube(Tube tube) throws CommonException {
@@ -87,6 +95,7 @@ public class TubeEndpoint {
 	 * It uses HTTP DELETE method.
 	 *
 	 * @param id the primary key of the entity to be deleted.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "removeTube")
 	public void removeTube(@Named("id") String id) throws CommonException {
@@ -94,11 +103,15 @@ public class TubeEndpoint {
 		service.deleteWithChildren(id);
 	}
 	
+	/**
+	 * Clean data.
+	 *
+	 * @throws CommonException the common exception
+	 */
 	@ApiMethod(name = "cleanData", httpMethod=HttpMethods.POST, path="cleanData")
 	public void cleanData() throws CommonException {
 		TubeService service = TubeService.getInstance();
 		service.cleanData();
 	}
-
 
 }

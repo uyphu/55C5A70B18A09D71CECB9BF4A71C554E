@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Statistics.
  * @author uyphu
@@ -17,6 +18,7 @@ import com.googlecode.objectify.annotation.Parent;
 @Entity
 public class Statistics {
 	
+	/** The video. */
 	@Parent 
 	@Index
 	private Key<Tube> video;
@@ -65,11 +67,21 @@ public class Statistics {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the video.
+	 *
+	 * @return the video
+	 */
 	@ApiResourceProperty(ignored = AnnotationBoolean.TRUE) 
 	public final Key<Tube> getVideo() {
 		return video;
 	}
 
+	/**
+	 * Sets the video.
+	 *
+	 * @param video the new video
+	 */
 	public final void setVideo(Key<Tube> video) {
 		this.video = video;
 	}
@@ -207,6 +219,9 @@ public class Statistics {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Statistics [id=" + id + ", video=" + video + ", createdAt=" + createdAt + ", viewCount=" + viewCount
@@ -214,6 +229,18 @@ public class Statistics {
 				+ ", commentCount=" + commentCount + ", rating=" + rating + "]";
 	}
 
+	/**
+	 * Instantiates a new statistics.
+	 *
+	 * @param video the video
+	 * @param createdAt the created at
+	 * @param viewCount the view count
+	 * @param likeCount the like count
+	 * @param dislikeCount the dislike count
+	 * @param favoriteCount the favorite count
+	 * @param commentCount the comment count
+	 * @param rating the rating
+	 */
 	public Statistics(Key<Tube> video, Date createdAt, int viewCount, int likeCount, int dislikeCount,
 			int favoriteCount, int commentCount, float rating) {
 		this.video = video;
@@ -226,6 +253,18 @@ public class Statistics {
 		this.rating = rating;
 	}
 
+	/**
+	 * Instantiates a new statistics.
+	 *
+	 * @param videoId the video id
+	 * @param createdAt the created at
+	 * @param viewCount the view count
+	 * @param likeCount the like count
+	 * @param dislikeCount the dislike count
+	 * @param favoriteCount the favorite count
+	 * @param commentCount the comment count
+	 * @param rating the rating
+	 */
 	public Statistics(String videoId, Date createdAt, int viewCount, int likeCount, int dislikeCount,
 			int favoriteCount, int commentCount, float rating) {
 		this.video = Key.create(Tube.class, videoId);

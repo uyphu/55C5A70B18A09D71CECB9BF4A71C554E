@@ -1,8 +1,8 @@
 package com.ltu.yealtube.constants;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Constant.
+ * @author uyphu
  */
 public class Constant {
 
@@ -93,5 +93,6 @@ public class Constant {
 	/** The Constant MAX_DAYS. */
 	public static final int MAX_DAYS = 3;
 	
+	/** The Constant MAX_AVERAGE. */
 	public static final int MAX_AVERAGE = 100;
 }
