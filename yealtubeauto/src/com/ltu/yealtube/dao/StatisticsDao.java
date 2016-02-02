@@ -1,12 +1,15 @@
 package com.ltu.yealtube.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.cmd.Query;
 import com.ltu.yealtube.entity.Statistics;
+import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
@@ -120,10 +123,16 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 		return executeQuery(query, cursorString, count);
 	}
 	
-	public CollectionResponse<Statistics> listByParent(String cursorString, Integer count) {
-		Query<Statistics> query = getQuery().order("+createdAt");
-		query.project(arg0)
+	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
+		Query<Statistics> query = getQuery();
+		query = query.ancestor(Key.create(Tube.class, parentId));
 		return executeQuery(query, cursorString, count);
+	}
+	
+	public List<Statistics> listByParent(String parentId, Integer count) {
+		Query<Statistics> query = getQuery();
+		query = query.ancestor(Key.create(Tube.class, parentId));
+		return executeQuery(query, count);
 	}
 
 }

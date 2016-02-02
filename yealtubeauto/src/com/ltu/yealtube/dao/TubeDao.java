@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.googlecode.objectify.cmd.Query;
 import com.ltu.yealtube.constants.Constant;
+import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCode;
@@ -35,8 +36,16 @@ public class TubeDao extends AbstractDao<Tube> {
 
 	@Override
 	public void cleanData() {
-		// TODO Auto-generated method stub
-		
+		CollectionResponse<Tube> list = list(null, null);
+		if (list != null) {
+			StatisticsDao dao = StatisticsDao.getInstance();
+			for (Tube tube : list.getItems()) {
+				for (Statistics statistics : tube.getStatistics()) {
+					dao.delete(statistics);
+				}
+				delete(tube);
+			}
+		}
 	}
 	
 	/**

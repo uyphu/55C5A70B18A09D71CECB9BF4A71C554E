@@ -8,6 +8,7 @@ import com.ltu.yealtube.dao.StatisticsDao;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
+import com.ltu.yealtube.utils.YoutubeUtil;
 
 
 /**
@@ -72,6 +73,17 @@ public class StatisticsService {
 			}
 			statistics.setCreatedAt(Calendar.getInstance().getTime());
 			return statisticsDao.persist(statistics);
+		} else {
+			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
+		}
+	}
+	
+	public Statistics insert(String videoId) throws CommonException {
+		if (videoId != null) {
+			Statistics statistics = YoutubeUtil.getStatistics(videoId);
+			StatisticsService service = StatisticsService.getInstance();
+			statistics = service.insert(statistics);
+			return statistics;
 		} else {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
 		}
@@ -154,5 +166,7 @@ public class StatisticsService {
 		return contains;
 	}
 	
-	public 
+	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
+		return statisticsDao.listByParent(parentId, cursorString, count);
+	}
 }

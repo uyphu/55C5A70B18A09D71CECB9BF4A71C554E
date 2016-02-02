@@ -31,7 +31,7 @@ public class Tube {
 	private String title;
 	
 	/** The description. */
-	@Index
+	//@Index
 	private String description;
 	
 	/** The created at. */
@@ -63,17 +63,18 @@ public class Tube {
 	 */
 	@OnLoad
 	private void onLoad() {
-		
+		StatisticsDao dao = StatisticsDao.getInstance();
 		if (statisticKeys != null) {
 			statistics = new ArrayList<Statistics>();
 			for (Key<Statistics> key : statisticKeys) {
-				StatisticsDao dao = new StatisticsDao();
 				Statistics item = dao.find(key.getId());
 				if (item != null) {
 					statistics.add(item);
 				}
 			}
 		}
+		
+		statistics = dao.listByParent(id, null);
 	}
 
 	/**

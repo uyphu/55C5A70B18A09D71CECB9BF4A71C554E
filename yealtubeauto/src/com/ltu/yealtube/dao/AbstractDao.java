@@ -119,10 +119,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
 		return ofy().load().type(clazz);
 	}
 	
-	public Query<T> getQuery(String parentId) {
-		return ofy().load().type(clazz);
-	}
-
 	/**
 	 * Gets the query.
 	 * 

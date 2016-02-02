@@ -3,6 +3,7 @@ package com.ltu.yealtube.endpoints;
 import javax.annotation.Nullable;
 import javax.inject.Named;
 
+import com.google.api.client.http.HttpMethods;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -24,7 +25,6 @@ public class StatisticsEndpoint {
 	@ApiMethod(name = "listStatistics")
 	public CollectionResponse<Statistics> listStatistics(@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
-
 		StatisticsService service = StatisticsService.getInstance();
 		return service.list(cursorString, limit);
 	}
@@ -80,5 +80,19 @@ public class StatisticsEndpoint {
 		StatisticsService service = StatisticsService.getInstance();
 		service.delete(id);
 	}
+	
+	@ApiMethod(name = "listByParent", httpMethod=HttpMethods.GET, path="listByParent")
+	public CollectionResponse<Statistics> listByParent(@Named("parentId") String parentId, @Nullable @Named("cursor") String cursorString,
+			@Nullable @Named("limit") Integer limit) {
+		StatisticsService service = StatisticsService.getInstance();
+		return service.listByParent(parentId, cursorString, limit);
+	}
+	
+	@ApiMethod(name = "insertFromYoutube", httpMethod=HttpMethods.POST, path="insertFromYoutube")
+	public Statistics insertFromYoutube(@Named("videoId") String videoId) throws CommonException {
+		StatisticsService service = StatisticsService.getInstance();
+		return service.insert(videoId);
+	}
+	
 
 }

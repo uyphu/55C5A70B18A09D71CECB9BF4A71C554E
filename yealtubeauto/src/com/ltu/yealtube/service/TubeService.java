@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.ltu.yealtube.constants.Constant;
+import com.ltu.yealtube.dao.StatisticsDao;
 import com.ltu.yealtube.dao.TubeDao;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
@@ -129,6 +131,10 @@ public class TubeService {
 	public void delete(String id) throws CommonException {
 		Tube tube = find(id);
 		if (tube != null) {
+			StatisticsDao dao = StatisticsDao.getInstance();
+			for (Statistics item : tube.getStatistics()) {
+				dao.delete(item);
+			}
 			tubeDao.delete(tube);
 		} else {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
@@ -195,6 +201,7 @@ public class TubeService {
 			Tube tube = YoutubeUtil.getTube(youtubeId);
 			tube.setCreatedAt(Calendar.getInstance().getTime());
 			tube.setModifiedAt(Calendar.getInstance().getTime());
+			tube.setStatus(Constant.PENDING_STATUS);
 			tube = tubeDao.persist(tube);
 			if (tube != null) {
 				Statistics statistics = YoutubeUtil.getStatistics(youtubeId);
@@ -209,6 +216,10 @@ public class TubeService {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
 		}
 		return null;
+	}
+	
+	public void cleanData() throws CommonException {
+		tubeDao.cleanData();
 	}
 	
 }

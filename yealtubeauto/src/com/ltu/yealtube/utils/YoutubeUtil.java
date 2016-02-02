@@ -2,6 +2,7 @@ package com.ltu.yealtube.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -360,6 +362,19 @@ public class YoutubeUtil {
 		return false;
 	}
 	
+	public static Properties getConfig() {
+		
+		try {
+			InputStream is =  YoutubeUtil.class.getClassLoader().getResourceAsStream("/config.properties");
+			Properties props = new Properties();
+			props.load(is);
+			return props;
+		} catch (IOException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+	
 	/**
 	 * The main method.
 	 *
@@ -367,14 +382,17 @@ public class YoutubeUtil {
 	 */
 	public static void main(String[] args) {
 		
-		try {
-			SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
-			Date date = format.parse("2015-05-23T23:01:32.000Z");
-			System.out.println(date.toString());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Properties properties = getConfig();
+		System.out.println(properties.getProperty("tube.analyse.days"));
+		
+//		try {
+//			SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+//			Date date = format.parse("2015-05-23T23:01:32.000Z");
+//			System.out.println(date.toString());
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 //		Tube tube = getTube("DQkrfti22mo");
 //		System.out.println(tube.toString());
