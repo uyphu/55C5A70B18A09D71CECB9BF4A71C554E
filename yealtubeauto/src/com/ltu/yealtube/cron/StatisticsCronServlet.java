@@ -57,11 +57,11 @@ public class StatisticsCronServlet extends HttpServlet {
 							if (modifiedAt.after(calendar.getTime())) {
 								tube.setStatus(Constant.IN_WORK_STATUS);								
 								tubeService.update(tube);
-								
 							} else {
+								Statistics statistics = statisticsService.insert(tube.getId());
 								tube.setModifiedAt(Calendar.getInstance().getTime());
+								tube.setViewCount(statistics.getViewCount());
 								tubeService.update(tube);
-								statisticsService.insert(tube.getId());
 							}
 						} else if (Constant.IN_WORK_STATUS == tube.getStatus()) {
 							validateStatistics(tube.getId());

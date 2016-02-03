@@ -30,6 +30,9 @@ public class Tube {
 	@Index
 	private String title;
 	
+	@Index
+	private int viewCount;
+	
 	/** The description. */
 	//@Index
 	private String description;
@@ -240,6 +243,14 @@ public class Tube {
 		this.modifiedAt = modifiedAt;
 	}
 	
+	public int getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
 	/**
 	 * Instantiates a new tube.
 	 */
@@ -281,6 +292,16 @@ public class Tube {
 			Date publishedAt, int status) {
 		this.id = id;
 		this.title = title;
+		this.description = description;
+		this.publishedAt = publishedAt;
+		this.status = status;
+	}
+
+	public Tube(String id, String title, int viewCount, String description, 
+			Date publishedAt, int status) {
+		this.id = id;
+		this.title = title;
+		this.viewCount = viewCount;
 		this.description = description;
 		this.publishedAt = publishedAt;
 		this.status = status;
