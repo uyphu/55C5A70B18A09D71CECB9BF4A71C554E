@@ -20,6 +20,7 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
+import com.ltu.yealtube.utils.YoutubeUtil;
 
 
 /**
@@ -45,7 +46,7 @@ public class StatisticsCronServlet extends HttpServlet {
 			
 			do {
 				CollectionResponse<Tube> tubes = tubeService.list(cursor, Constant.MAX_RECORDS);
-				if (tubes != null) {
+				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
 						if (Constant.PENDING_STATUS == tube.getStatus()) {
 							Date createdAt = tube.getCreatedAt();
@@ -53,7 +54,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							Calendar calendar = Calendar.getInstance();
 							calendar.setTime(createdAt);
 							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
-							if (modifiedAt.before(calendar.getTime())) {
+							if (modifiedAt.after(calendar.getTime())) {
 								tube.setStatus(Constant.IN_WORK_STATUS);								
 								tubeService.update(tube);
 								
@@ -66,8 +67,9 @@ public class StatisticsCronServlet extends HttpServlet {
 							validateStatistics(tube.getId());
 						} else if (Constant.APPROVED_STATUS == tube.getStatus()) {
 							//send tube to yealtube
-							
-							tubeService.deleteWithChildren(tube.getId());
+							if (YoutubeUtil.sendTube(tube.getId())){
+								tubeService.deleteWithChildren(tube.getId());
+							}
 						} else if (Constant.CANCELLED_STATUS == tube.getStatus()) {
 							tubeService.deleteWithChildren(tube.getId());
 						}
@@ -77,7 +79,7 @@ public class StatisticsCronServlet extends HttpServlet {
 					cursor = null;
 				}
 				
-			} while (cursor == null || cursor.isEmpty());
+			} while (cursor != null);
 			 
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {

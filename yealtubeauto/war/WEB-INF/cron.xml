@@ -5,4 +5,9 @@
 		<description>Automatically getting hot tubes</description>
 		<schedule>every day 00:00</schedule>
 	</cron>
+	<cron>
+		<url>/cron/statisticscron</url>
+		<description>Automatically getting statistics</description>
+		<schedule>every 3 hours</schedule>
+	</cron>
 </cronentries>

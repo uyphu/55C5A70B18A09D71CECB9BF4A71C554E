@@ -19,10 +19,10 @@ import com.ltu.yealtube.utils.YoutubeUtil;
  * @author uyphu
  */
 @SuppressWarnings("serial")
-public class YealTubeCronServlet extends HttpServlet {
+public class YealtubeCronServlet extends HttpServlet {
 
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(YealTubeCronServlet.class);
+	private static final Logger logger = Logger.getLogger(YealtubeCronServlet.class);
 	
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)

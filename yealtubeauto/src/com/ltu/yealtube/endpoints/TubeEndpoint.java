@@ -113,5 +113,4 @@ public class TubeEndpoint {
 		TubeService service = TubeService.getInstance();
 		service.cleanData();
 	}
-	//FIXME phu tried to add sth here
 }
