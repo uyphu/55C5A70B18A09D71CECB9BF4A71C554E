@@ -53,7 +53,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							Date modifiedAt = tube.getModifiedAt();
 							Calendar calendar = Calendar.getInstance();
 							calendar.setTime(createdAt);
-							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
+							calendar.add(Calendar.HOUR, Constant.MAX_HOUR);
 							if (modifiedAt.after(calendar.getTime())) {
 								tube.setStatus(Constant.IN_WORK_STATUS);								
 								tubeService.update(tube);
@@ -99,6 +99,16 @@ public class StatisticsCronServlet extends HttpServlet {
 		CollectionResponse<Statistics> result = statisticsService.listByParent(videoId, null, null);
 		if (result != null) {
 			List<Statistics> list = new ArrayList<Statistics>(result.getItems());
+			Tube tube = tubeService.find(videoId);
+			if (list.size() < 2) {
+				tube.setStatus(Constant.PENDING_STATUS);
+				try {
+					tubeService.update(tube);
+				} catch (CommonException e) {
+					logger.error(e.getMessage(), e.getCause());
+				}
+				return false;
+			}
 			int totalView = 0;
 			int viewCount = list.get(0).getViewCount();
 			int likeCount = list.get(0).getLikeCount();
@@ -122,7 +132,6 @@ public class StatisticsCronServlet extends HttpServlet {
 			}
 			
 			int average = totalView/(list.size()-1);
-			Tube tube = tubeService.find(videoId);
 			try {
 				if (average > Constant.MAX_AVERAGE) {
 					tube.setStatus(Constant.APPROVED_STATUS);

@@ -116,7 +116,6 @@ public class TubeService {
 			if (!containsTube(tube)) {
 				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
 			} 
-			tube.setModifiedAt(Calendar.getInstance().getTime());
 			tubeDao.delete(tube);
 		} else {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());

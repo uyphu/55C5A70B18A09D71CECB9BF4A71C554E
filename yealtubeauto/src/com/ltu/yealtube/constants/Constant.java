@@ -85,14 +85,22 @@ public class Constant {
 	public static final String LONG_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	/** The Constant MAX_VIEW. */
-	public static final int MAX_VIEW = 1500000;
+	public static final int MAX_VIEW = 1100000;
 	
 	/** The Constant MAX_RECORDS. */
 	public static final int MAX_RECORDS = 10;
 	
 	/** The Constant MAX_DAYS. */
-	public static final int MAX_DAYS = 3;
+	public static final int MAX_DAYS = 1;
 	
 	/** The Constant MAX_AVERAGE. */
-	public static final int MAX_AVERAGE = 100;
+	public static final int MAX_AVERAGE = 20;
+	
+	public static final int MAX_PAGE_COMMENT = 10; //Each page has 20 comments
+	
+	public static final int MAX_HOUR = 24;
+	
+	public static final int MAX_MINUTE = 10;
+	
+	public static final Long ADMIN_ID = 1L;
 }

@@ -29,6 +29,7 @@ import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class YoutubeUtil.
  * @author uyphu
@@ -249,7 +250,7 @@ public class YoutubeUtil {
 			String url = "https://www.googleapis.com/youtube/v3/commentThreads?part="
 					+ part + "&videoId=" + videoId + "&key=" + Constant.API_KEY;
 			if (pageToken != null) {
-				url = url + pageToken;
+				url = url + "&pageToken=" + pageToken;
 			}
 			return new URL(url);
 		} catch (MalformedURLException e) {
@@ -285,13 +286,28 @@ public class YoutubeUtil {
 								if (statistics != null) {
 									if (statistics.getViewCount() < Constant.MAX_VIEW) {
 										return tubes;
-									} else {									
+									} else {
+										//FIXME remove calculate when uploading production
+										SimpleDateFormat format = new SimpleDateFormat(Constant.DATE_FORMAT);
+										System.out.println("........");
+										
+										Long start = Calendar.getInstance().getTime().getTime();
+										System.out.println("Start: "+ start.toString());
+										System.out.println(format.format(Calendar.getInstance().getTime()));
 										if (hasGoodComment(videoId)) {
 											List<Statistics> list = new ArrayList<Statistics>();
 											list.add(statistics);
 											tube.setStatistics(list);
 											tubes.add(tube);
+											System.out.println("......................Added: "+ videoId);
+										} else {
+											System.out.println("Not added: "+ videoId);
 										}
+										Long end = Calendar.getInstance().getTime().getTime();
+										System.out.println("End: "+ end.toString());
+										System.out.println(format.format(Calendar.getInstance().getTime()));
+										
+										System.out.println("Duratin: "+ String.valueOf((end - start)/1000));
 									}
 								}
 							}
@@ -316,10 +332,12 @@ public class YoutubeUtil {
 	public static boolean hasGoodComment(String videoId) {
 		try {
 			int count = 0;
+			String pageToken = null;
+			URL url;
+			JSONObject json;
 			do {
-				String pageToken = null;
-				URL url = getCommentThreadUrl("snippet", videoId, pageToken);
-				JSONObject json = callYoutube(url);
+				url = getCommentThreadUrl("snippet", videoId, pageToken);
+				json = callYoutube(url);
 				if (json != null) {
 					pageToken = json.get("nextPageToken").toString();
 					JSONArray jsonArray = (JSONArray)json.get("items");
@@ -328,20 +346,44 @@ public class YoutubeUtil {
 							JSONObject item = new JSONObject(jsonArray.get(i).toString());
 							item = new JSONObject(item.get("snippet").toString());
 							item = new JSONObject(item.get("topLevelComment").toString());
-							item = new JSONObject(item.get("snippet").toString());
-							String textDisplay = item.getString("textDisplay");
-							if (hasGoodWord(textDisplay)) {
+							String comment = getComment(item.getString("id"));
+							if (hasGoodWord(comment)) {
 								return true;
 							}
 						}
 					}
 				}
 				count ++;
-			} while (count < 20);
+			} while (count < Constant.MAX_PAGE_COMMENT);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return false;
+	}
+	
+	/**
+	 * Gets the comment.
+	 *
+	 * @param commentId the comment id
+	 * @return the comment
+	 */
+	public static String getComment(String commentId) {
+		URL url;
+		try {
+			String strUrl = "https://www.googleapis.com/youtube/v3/comments?part=snippet&id="+commentId+"&key="+Constant.API_KEY;
+			url = new URL(strUrl);
+			JSONObject json = callYoutube(url);
+			JSONArray jsonArray = (JSONArray)json.get("items");
+			JSONObject item = new JSONObject(jsonArray.get(0).toString());
+			item = new JSONObject(item.get("snippet").toString());
+			return  item.getString("textDisplay");
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage(), e.getCause());
+		} catch (JSONException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -356,7 +398,7 @@ public class YoutubeUtil {
 				"thich", "qua dinh", "qua hay", "tuyet voi", "fantastic",
 				"wonderful", "perfect", "incredible", "unbelievable", "vui",
 				"vui qua", "happy", "bien", "ok", "enjoy", "nice", "pretty",
-				"beautiful", "well" };
+				"beautiful", "well", "awsome", "loz﻿"};
 		for (int i = 0; i < words.length; i++) {
 			if (text.indexOf(words[i]) != -1) {
 				return true;
@@ -365,6 +407,11 @@ public class YoutubeUtil {
 		return false;
 	}
 	
+	/**
+	 * Gets the config.
+	 *
+	 * @return the config
+	 */
 	public static Properties getConfig() {
 		
 		try {
@@ -391,13 +438,20 @@ public class YoutubeUtil {
 			Map<String, String> params = new HashMap<String, String>();
             params.put("id", videoId);
             post(endpoint, params);
+            return true;
 		} catch (IOException e) {
 			log.error(e.getMessage(), e.getCause());
-			e.printStackTrace();
 		}
 		return false;
 	}
 	
+	/**
+	 * Post.
+	 *
+	 * @param endpoint the endpoint
+	 * @param params the params
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void post(String endpoint, Map<String, String> params)
 			throws IOException {
 		URL url;
@@ -459,8 +513,8 @@ public class YoutubeUtil {
 	 */
 	public static void main(String[] args) {
 		
-		Properties properties = getConfig();
-		System.out.println(properties.getProperty("tube.analyse.days"));
+//		Properties properties = getConfig();
+//		System.out.println(properties.getProperty("tube.analyse.days"));
 		
 //		try {
 //			SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
@@ -478,6 +532,7 @@ public class YoutubeUtil {
 //		for (Tube tube : tubes) {
 //			System.out.println(tube.toString());
 //		}
+		
 	}
 	
 }
