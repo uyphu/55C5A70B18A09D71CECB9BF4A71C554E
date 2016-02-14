@@ -64,8 +64,11 @@ public enum ErrorCodeDetail {
 	ERROR_INPUT_NOT_VALID(618, "[618] Input not valid"),
 	
 	/** The error query not valid. */
-	ERROR_QUERY_NOT_VALID(619, "[619] Error create query");
-
+	ERROR_QUERY_NOT_VALID(619, "[619] Error create query"),
+	
+	/** The error url not valid. */
+	ERROR_URL_NOT_VALID(620, "[620] Error url not valid");
+	
 	/** The id. */
 	private final int id;
 	

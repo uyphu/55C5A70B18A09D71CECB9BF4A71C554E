@@ -23,10 +23,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.googlecode.objectify.Key;
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
+import com.ltu.yealtube.exeptions.CommonException;
+import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
 
 // TODO: Auto-generated Javadoc
@@ -431,18 +434,12 @@ public class YoutubeUtil {
 	 * @param videoId the video id
 	 * @return true, if successful
 	 */
-	public static boolean sendTube(String videoId) {
-		try {
-
-			String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertVideo";
-			Map<String, String> params = new HashMap<String, String>();
-            params.put("id", videoId);
-            post(endpoint, params);
-            return true;
-		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
-		}
-		return false;
+	public static boolean sendTube(String videoId) throws CommonException {
+		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertVideo";
+		Map<String, String> params = new HashMap<String, String>();
+        params.put("id", videoId);
+        post(endpoint, params);
+        return true;
 	}
 	
 	/**
@@ -453,12 +450,12 @@ public class YoutubeUtil {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private static void post(String endpoint, Map<String, String> params)
-			throws IOException {
+			throws CommonException {
 		URL url;
 		try {
 			url = new URL(endpoint);
 		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException("invalid url: " + endpoint);
+			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_URL_NOT_VALID.getMsg());
 		}
 		StringBuilder bodyBuilder = new StringBuilder();
 		Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
@@ -490,15 +487,20 @@ public class YoutubeUtil {
 			// handle the response
 			int status = conn.getResponseCode();
 			if (status != 200) {
-				throw new IOException("Post failed with error code " + status);
+				throw new CommonException(status, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
 			}
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
-			String output;
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-				System.out.println(output);
+//			BufferedReader br = new BufferedReader(new InputStreamReader(
+//					(conn.getInputStream())));
+//			String output;
+//			System.out.println("Output from Server .... \n");
+//			while ((output = br.readLine()) != null) {
+//				System.out.println(output);
+//			}
+		} catch (IOException e) {
+			if (conn != null) {
+				conn.disconnect();
 			}
+			throw new CommonException(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, ErrorCodeDetail.ERROR_INSERT_ENTITY.getMsg());
 		} finally {
 			if (conn != null) {
 				conn.disconnect();
@@ -533,6 +535,14 @@ public class YoutubeUtil {
 //			System.out.println(tube.toString());
 //		}
 		
+		//sendTube("21jVawyO0m8");
+		
+//		try {
+//			sendTube("oOyGODrV6aU");
+//		} catch (CommonException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 }

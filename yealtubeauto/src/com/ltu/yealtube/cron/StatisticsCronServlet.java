@@ -13,12 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.StatisticsService;
+import com.ltu.yealtube.service.TubeReportService;
 import com.ltu.yealtube.service.TubeService;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
@@ -67,9 +69,19 @@ public class StatisticsCronServlet extends HttpServlet {
 							validateStatistics(tube.getId());
 						} else if (Constant.APPROVED_STATUS == tube.getStatus()) {
 							//send tube to yealtube
-							if (YoutubeUtil.sendTube(tube.getId())){
-								tubeService.deleteWithChildren(tube.getId());
+							try {
+								boolean flag = YoutubeUtil.sendTube(tube.getId());
+								if (!flag){
+									TubeReportService tubeReportService = TubeReportService.getInstance();
+									tubeReportService.insert(tube.getId(), HttpStatusCodes.STATUS_CODE_FORBIDDEN);
+								} 
+							} catch (CommonException e) {
+								logger.error(e.getMessage(), e.getCause());
+								TubeReportService tubeReportService = TubeReportService.getInstance();
+								tubeReportService.insert(tube.getId(), e.getStatusCode());
 							}
+							tubeService.deleteWithChildren(tube.getId());
+							
 						} else if (Constant.CANCELLED_STATUS == tube.getStatus()) {
 							tubeService.deleteWithChildren(tube.getId());
 						}
