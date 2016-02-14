@@ -45,7 +45,8 @@ public class StatisticsCronServlet extends HttpServlet {
 			String cursor = null;
 			
 			do {
-				CollectionResponse<Tube> tubes = tubeService.list(cursor, Constant.MAX_RECORDS);
+				//CollectionResponse<Tube> tubes = tubeService.list(cursor, Constant.MAX_RECORDS);
+				CollectionResponse<Tube> tubes = tubeService.searchTubes("status <= ", 3, cursor, Constant.MAX_RECORDS);
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
 						if (Constant.PENDING_STATUS == tube.getStatus()) {
@@ -80,9 +81,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							}
 							tubeService.update(tube);
 							
-						} else if (Constant.CANCELLED_STATUS == tube.getStatus()) {
-							tubeService.deleteWithChildren(tube.getId());
-						}
+						} 
 					}
 					cursor = tubes.getNextPageToken();
 				} else {

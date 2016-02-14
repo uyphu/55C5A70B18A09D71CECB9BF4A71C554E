@@ -126,7 +126,7 @@ public class TubeDao extends AbstractDao<Tube> {
 	 * @return the collection response
 	 * @throws CommonException the common exception
 	 */
-	public CollectionResponse<Tube> searchTubesByStatus(String field, int status, String cursorString, Integer count)
+	public CollectionResponse<Tube> searchTubes(String field, int status, String cursorString, Integer count)
 			throws CommonException {
 		Query<Tube> query = getQueryByStatus(field, status);
 		return executeQuery(query, cursorString, count);

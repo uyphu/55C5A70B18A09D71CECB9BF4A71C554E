@@ -160,6 +160,6 @@ public class TubeEndpoint {
 	public CollectionResponse<Tube> searchTubesByStatus(@Named("field") String field, @Named("status") Integer status,
 			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
 		TubeService service = TubeService.getInstance();
-		return service.searchTubesByStatus(field, status, cursorString, count);
+		return service.searchTubes(field, status, cursorString, count);
 	}
 }

@@ -271,8 +271,8 @@ public class TubeService {
 	 * @return the collection response
 	 * @throws CommonException the common exception
 	 */
-	public CollectionResponse<Tube> searchTubesByStatus(String field, int value, String cursorString, Integer count)
+	public CollectionResponse<Tube> searchTubes(String field, int value, String cursorString, Integer count)
 			throws CommonException {
-		return tubeDao.searchTubesByStatus(field, value, cursorString, count);
+		return tubeDao.searchTubes(field, value, cursorString, count);
 	}
 }
