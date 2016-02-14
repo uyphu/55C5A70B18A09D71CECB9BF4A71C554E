@@ -13,14 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.StatisticsService;
-import com.ltu.yealtube.service.TubeReportService;
 import com.ltu.yealtube.service.TubeService;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
@@ -55,7 +53,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							Date modifiedAt = tube.getModifiedAt();
 							Calendar calendar = Calendar.getInstance();
 							calendar.setTime(createdAt);
-							calendar.add(Calendar.HOUR, Constant.MAX_HOUR);
+							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
 							if (modifiedAt.after(calendar.getTime())) {
 								tube.setStatus(Constant.IN_WORK_STATUS);								
 								tubeService.update(tube);
@@ -72,15 +70,15 @@ public class StatisticsCronServlet extends HttpServlet {
 							try {
 								boolean flag = YoutubeUtil.sendTube(tube.getId());
 								if (!flag){
-									TubeReportService tubeReportService = TubeReportService.getInstance();
-									tubeReportService.insert(tube.getId(), HttpStatusCodes.STATUS_CODE_FORBIDDEN);
-								} 
+									tube.setStatus(Constant.UNSENT_STATUS);
+								} else {
+									tube.setStatus(Constant.SENT_STATUS);
+								}
 							} catch (CommonException e) {
 								logger.error(e.getMessage(), e.getCause());
-								TubeReportService tubeReportService = TubeReportService.getInstance();
-								tubeReportService.insert(tube.getId(), e.getStatusCode());
+								tube.setStatus(Constant.UNSENT_STATUS);
 							}
-							tubeService.deleteWithChildren(tube.getId());
+							tubeService.update(tube);
 							
 						} else if (Constant.CANCELLED_STATUS == tube.getStatus()) {
 							tubeService.deleteWithChildren(tube.getId());

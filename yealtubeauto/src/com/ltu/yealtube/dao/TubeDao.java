@@ -90,6 +90,16 @@ public class TubeDao extends AbstractDao<Tube> {
 					+ Constant.STRING_EXEPTION_DETAIL + e.getMessage());
 		}
 	}
+	
+	/**
+	 * Gets the query over status.
+	 *
+	 * @param status the status
+	 * @return the query over status
+	 */
+	public Query<Tube> getQueryByStatus(String field, int status) {
+		return ofy().load().type(Tube.class).filter(field, status);
+	}
 
 
 	/**
@@ -104,6 +114,21 @@ public class TubeDao extends AbstractDao<Tube> {
 	public CollectionResponse<Tube> searchTubes(String querySearch, String cursorString, Integer count)
 			throws CommonException {
 		Query<Tube> query = getQuery(querySearch);
+		return executeQuery(query, cursorString, count);
+	}
+	
+	/**
+	 * Search tubes over status.
+	 *
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	public CollectionResponse<Tube> searchTubesByStatus(String field, int status, String cursorString, Integer count)
+			throws CommonException {
+		Query<Tube> query = getQueryByStatus(field, status);
 		return executeQuery(query, cursorString, count);
 	}
 

@@ -15,8 +15,6 @@ import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class TubeService.
  * @author uyphu
@@ -98,6 +96,28 @@ public class TubeService {
 			if (!containsTube(tube)) {
 				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
 			} 
+			tube.setModifiedAt(Calendar.getInstance().getTime());
+			return tubeDao.update(tube);
+		} else {
+			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
+		}
+	}
+	
+	/**
+	 * Update.
+	 *
+	 * @param id the id
+	 * @param status the status
+	 * @return the tube
+	 * @throws CommonException the common exception
+	 */
+	public Tube update(String id, Integer status) throws CommonException {
+		if (id != null && status != null) {
+			if (!containsTube(id)) {
+				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
+			} 
+			Tube tube = find(id);
+			tube.setStatus(status);
 			tube.setModifiedAt(Calendar.getInstance().getTime());
 			return tubeDao.update(tube);
 		} else {
@@ -242,4 +262,17 @@ public class TubeService {
 		return tubeDao.searchTubes(querySearch, cursorString, count);
 	}
 	
+	/**
+	 * Search tubes over status.
+	 *
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	public CollectionResponse<Tube> searchTubesByStatus(String field, int value, String cursorString, Integer count)
+			throws CommonException {
+		return tubeDao.searchTubesByStatus(field, value, cursorString, count);
+	}
 }

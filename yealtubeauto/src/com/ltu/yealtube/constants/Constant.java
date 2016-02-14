@@ -1,5 +1,6 @@
 package com.ltu.yealtube.constants;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Constant.
  * @author uyphu
@@ -41,6 +42,12 @@ public class Constant {
     
     /** The Constant CANCELLED_STATUS. */
     public static final int CANCELLED_STATUS = 3;
+    
+    /** The Constant UNSENT_STATUS. */
+    public static final int UNSENT_STATUS = 4;
+    
+    /** The Constant SENT_STATUS. */
+    public static final int SENT_STATUS = 5;
     
     /** The Constant UTF_8. */
     public static final String UTF_8 = "UTF-8";
@@ -91,16 +98,21 @@ public class Constant {
 	public static final int MAX_RECORDS = 10;
 	
 	/** The Constant MAX_DAYS. */
-	public static final int MAX_DAYS = 1;
+	public static final int MAX_DAYS = 2;
 	
 	/** The Constant MAX_AVERAGE. */
-	public static final int MAX_AVERAGE = 20;
+	public static final int MAX_AVERAGE = 30;
 	
+	/** The Constant MAX_PAGE_COMMENT. */
 	public static final int MAX_PAGE_COMMENT = 10; //Each page has 20 comments
 	
+	/** The Constant MAX_HOUR. */
 	public static final int MAX_HOUR = 24;
 	
+	/** The Constant MAX_MINUTE. */
 	public static final int MAX_MINUTE = 10;
 	
+	/** The Constant ADMIN_ID. */
 	public static final Long ADMIN_ID = 1L;
+	
 }

@@ -7,14 +7,15 @@ import com.google.api.client.http.HttpMethods;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.TubeService;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TubeEndpoint.
+ * uyphu
  */
 @Api(name = "tubeendpoint", namespace = @ApiNamespace(ownerDomain = "ltu.com", ownerName = "ltu.com", packagePath = "yealtube.entity"))
 public class TubeEndpoint {
@@ -89,6 +90,20 @@ public class TubeEndpoint {
 		TubeService service = TubeService.getInstance();
 		return service.update(tube);
 	}
+	
+	/**
+	 * Update tube.
+	 *
+	 * @param id the id
+	 * @param status the status
+	 * @return the tube
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "updateStatus", httpMethod=HttpMethods.POST, path="updateStatus")
+	public Tube updateStatus(@Named("id") String id, @Named("status") Integer status) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		return service.update(id, status);
+	}
 
 	/**
 	 * This method removes the entity with primary key id.
@@ -112,5 +127,39 @@ public class TubeEndpoint {
 	public void cleanData() throws CommonException {
 		TubeService service = TubeService.getInstance();
 		service.cleanData();
+	}
+	
+	/**
+	 * Search tubes.
+	 *
+	 * @param querySearch the query search
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "searchTubes", httpMethod = HttpMethod.GET, path = "searchTubes")
+	public CollectionResponse<Tube> searchTubes(@Nullable @Named("querySearch") String querySearch,
+			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		return service.searchTubes(querySearch, cursorString, count);
+	}
+	
+	
+	/**
+	 * Search tubes by status.
+	 *
+	 * @param field the field
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "searchTubesOverStatus", httpMethod = HttpMethod.GET, path = "searchTubesOverStatus")
+	public CollectionResponse<Tube> searchTubesByStatus(@Named("field") String field, @Named("status") Integer status,
+			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		return service.searchTubesByStatus(field, status, cursorString, count);
 	}
 }

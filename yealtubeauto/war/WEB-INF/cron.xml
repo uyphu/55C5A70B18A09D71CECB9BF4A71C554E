@@ -6,8 +6,13 @@
 		<schedule>every day 00:00</schedule>
 	</cron>
 	<cron>
+		<url>/cron/removecron</url>
+		<description>Automatically remove tube</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
 		<url>/cron/statisticscron</url>
 		<description>Automatically getting statistics</description>
-		<schedule>every 1 hours</schedule>
+		<schedule>every 2 hours</schedule>
 	</cron>
 </cronentries>
