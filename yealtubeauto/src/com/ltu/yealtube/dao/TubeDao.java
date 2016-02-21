@@ -48,6 +48,19 @@ public class TubeDao extends AbstractDao<Tube> {
 		}
 	}
 	
+	public void cleanData(int status) throws CommonException {
+		CollectionResponse<Tube> list = searchTubes("status = ", status, null, null);
+		if (list != null) {
+			StatisticsDao dao = StatisticsDao.getInstance();
+			for (Tube tube : list.getItems()) {
+				for (Statistics statistics : tube.getStatistics()) {
+					dao.delete(statistics);
+				}
+				delete(tube);
+			}
+		}
+	}
+	
 	/**
 	 * Gets the single instance of TubeTubeDao.
 	 *
@@ -129,6 +142,7 @@ public class TubeDao extends AbstractDao<Tube> {
 	public CollectionResponse<Tube> searchTubes(String field, int status, String cursorString, Integer count)
 			throws CommonException {
 		Query<Tube> query = getQueryByStatus(field, status);
+		query = query.order("-createdAt");
 		return executeQuery(query, cursorString, count);
 	}
 

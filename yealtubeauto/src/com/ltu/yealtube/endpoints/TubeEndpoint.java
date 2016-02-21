@@ -130,6 +130,18 @@ public class TubeEndpoint {
 	}
 	
 	/**
+	 * Clean data by status.
+	 *
+	 * @param status the status
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "cleanDataByStatus", httpMethod=HttpMethods.POST, path="cleanDataByStatus")
+	public void cleanDataByStatus(@Named("status") Integer status) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		service.cleanData(status);
+	}
+	
+	/**
 	 * Search tubes.
 	 *
 	 * @param querySearch the query search

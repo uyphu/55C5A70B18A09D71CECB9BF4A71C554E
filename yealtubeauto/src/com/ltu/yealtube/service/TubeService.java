@@ -248,6 +248,16 @@ public class TubeService {
 	}
 	
 	/**
+	 * Clean data.
+	 *
+	 * @param status the status
+	 * @throws CommonException the common exception
+	 */
+	public void cleanData(int status) throws CommonException {
+		tubeDao.cleanData(status);
+	}
+	
+	/**
 	 * Search tubes.
 	 *
 	 * @param status the status
