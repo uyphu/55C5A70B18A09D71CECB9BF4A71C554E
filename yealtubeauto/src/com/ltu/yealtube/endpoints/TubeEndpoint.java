@@ -168,7 +168,7 @@ public class TubeEndpoint {
 	 * @return the collection response
 	 * @throws CommonException the common exception
 	 */
-	@ApiMethod(name = "searchTubesOverStatus", httpMethod = HttpMethod.GET, path = "searchTubesOverStatus")
+	@ApiMethod(name = "searchTubesByStatus", httpMethod = HttpMethod.GET, path = "searchTubesByStatus")
 	public CollectionResponse<Tube> searchTubesByStatus(@Named("field") String field, @Named("status") Integer status,
 			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
 		TubeService service = TubeService.getInstance();

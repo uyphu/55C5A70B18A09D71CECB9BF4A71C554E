@@ -60,7 +60,6 @@ public class StatisticsCronServlet extends HttpServlet {
 								tubeService.update(tube);
 							} else {
 								Statistics statistics = statisticsService.insert(tube.getId());
-								tube.setModifiedAt(Calendar.getInstance().getTime());
 								tube.setViewCount(statistics.getViewCount());
 								tubeService.update(tube);
 							}

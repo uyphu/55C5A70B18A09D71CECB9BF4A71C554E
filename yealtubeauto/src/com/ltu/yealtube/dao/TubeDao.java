@@ -142,7 +142,7 @@ public class TubeDao extends AbstractDao<Tube> {
 	public CollectionResponse<Tube> searchTubes(String field, int status, String cursorString, Integer count)
 			throws CommonException {
 		Query<Tube> query = getQueryByStatus(field, status);
-		query = query.order("-createdAt");
+		//query = query.order("-createdAt");
 		return executeQuery(query, cursorString, count);
 	}
 
