@@ -1,5 +1,7 @@
 package com.ltu.yealtube.endpoints;
 
+import java.util.Calendar;
+
 import javax.annotation.Nullable;
 import javax.inject.Named;
 
@@ -12,6 +14,9 @@ import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.StatisticsService;
 
+/**
+ * The Class StatisticsEndpoint.
+ */
 @Api(name = "statisticsendpoint", namespace = @ApiNamespace(ownerDomain = "ltu.com", ownerName = "ltu.com", packagePath = "yealstatistics.entity"))
 public class StatisticsEndpoint {
 
@@ -19,6 +24,8 @@ public class StatisticsEndpoint {
 	 * This method lists all the entities inserted in datastore.
 	 * It uses HTTP GET method and paging support.
 	 *
+	 * @param cursorString the cursor string
+	 * @param limit the limit
 	 * @return A CollectionResponse class containing the list of all entities
 	 * persisted and a cursor to the next page.
 	 */
@@ -48,6 +55,7 @@ public class StatisticsEndpoint {
 	 *
 	 * @param statistics the entity to be inserted.
 	 * @return The inserted entity.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "insertStatistics")
 	public Statistics insertStatistics(Statistics statistics) throws CommonException {
@@ -62,6 +70,7 @@ public class StatisticsEndpoint {
 	 *
 	 * @param statistics the entity to be updated.
 	 * @return The updated entity.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "updateStatistics")
 	public Statistics updateStatistics(Statistics statistics) throws CommonException {
@@ -74,6 +83,7 @@ public class StatisticsEndpoint {
 	 * It uses HTTP DELETE method.
 	 *
 	 * @param id the primary key of the entity to be deleted.
+	 * @throws CommonException the common exception
 	 */
 	@ApiMethod(name = "removeStatistics")
 	public void removeStatistics(@Named("id") String id) throws CommonException {
@@ -81,6 +91,14 @@ public class StatisticsEndpoint {
 		service.delete(id);
 	}
 	
+	/**
+	 * List by parent.
+	 *
+	 * @param parentId the parent id
+	 * @param cursorString the cursor string
+	 * @param limit the limit
+	 * @return the collection response
+	 */
 	@ApiMethod(name = "listByParent", httpMethod=HttpMethods.GET, path="listByParent")
 	public CollectionResponse<Statistics> listByParent(@Named("parentId") String parentId, @Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
@@ -88,6 +106,30 @@ public class StatisticsEndpoint {
 		return service.listByParent(parentId, cursorString, limit);
 	}
 	
+	/**
+	 * List by parent.
+	 *
+	 * @param parentId the parent id
+	 * @return the statistics
+	 */
+	@ApiMethod(name = "getAverage", httpMethod=HttpMethods.GET, path="getAverage")
+	public Statistics getAverage(@Named("parentId") String parentId) {
+		StatisticsService service = StatisticsService.getInstance();
+		Integer viewCount = service.getAverage(parentId);
+		Statistics statistics = new Statistics();
+		statistics.setId(1L);
+		statistics.setCreatedAt(Calendar.getInstance().getTime());
+		statistics.setViewCount(viewCount);
+		return statistics;
+	}
+	
+	/**
+	 * Insert from youtube.
+	 *
+	 * @param videoId the video id
+	 * @return the statistics
+	 * @throws CommonException the common exception
+	 */
 	@ApiMethod(name = "insertFromYoutube", httpMethod=HttpMethods.POST, path="insertFromYoutube")
 	public Statistics insertFromYoutube(@Named("videoId") String videoId) throws CommonException {
 		StatisticsService service = StatisticsService.getInstance();

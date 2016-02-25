@@ -91,6 +91,9 @@ public class Constant {
 	/** The Constant LONG_DATE_FORMAT. */
 	public static final String LONG_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
+	/** The Constant SHORT_DATE_FORMAT. */
+	public static final String SHORT_DATE_FORMAT = "yyyy-MM-dd";
+	
 	/** The Constant MAX_VIEW. */
 	public static final int MAX_VIEW = 1100000;
 	
@@ -101,7 +104,7 @@ public class Constant {
 	public static final int MAX_DAYS = 2;
 	
 	/** The Constant MAX_AVERAGE. */
-	public static final int MAX_AVERAGE = 30;
+	public static final int MAX_AVERAGE = 100;
 	
 	/** The Constant MAX_PAGE_COMMENT. */
 	public static final int MAX_PAGE_COMMENT = 10; //Each page has 20 comments

@@ -10,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.ltu.yealtube.entity.Report;
 import com.ltu.yealtube.entity.Tube;
+import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.service.TubeService;
+import com.ltu.yealtube.utils.AppUtils;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
 /**
@@ -33,9 +36,13 @@ public class YealtubeCronServlet extends HttpServlet {
 			
 			List<Tube> tubes = YoutubeUtil.getHotTube();
 			System.out.println(tubes.size());
+			TubeService service = TubeService.getInstance();
+			ReportService reportService = ReportService.getInstance();
 			for (Tube tube : tubes) {
-				TubeService service = TubeService.getInstance();
 				service.insert(tube.getId());
+				Report report = new Report(AppUtils.toShortDateString(AppUtils.getCurrentDate()));
+				report.setPendingCount(1);
+				reportService.add(report);
 			}
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {

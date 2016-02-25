@@ -15,11 +15,14 @@ import org.apache.log4j.Logger;
 
 import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.constants.Constant;
+import com.ltu.yealtube.entity.Report;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
+import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
+import com.ltu.yealtube.utils.AppUtils;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
 
@@ -70,13 +73,17 @@ public class StatisticsCronServlet extends HttpServlet {
 							try {
 								boolean flag = YoutubeUtil.sendTube(tube.getId());
 								if (!flag){
+									
 									tube.setStatus(Constant.UNSENT_STATUS);
+									addReport(Constant.UNSENT_STATUS);
 								} else {
 									tube.setStatus(Constant.SENT_STATUS);
+									addReport(Constant.SENT_STATUS);
 								}
 							} catch (CommonException e) {
 								logger.error(e.getMessage(), e.getCause());
 								tube.setStatus(Constant.UNSENT_STATUS);
+								addReport(Constant.UNSENT_STATUS);
 							}
 							tubeService.update(tube);
 							
@@ -93,6 +100,41 @@ public class StatisticsCronServlet extends HttpServlet {
 		} catch (Exception ex) {
 			logger.error(ex.getMessage(), ex.getCause());
 		}
+	}
+	
+	/**
+	 * Adds the report.
+	 *
+	 * @param status the status
+	 */
+	private void addReport(int status) {
+		try {
+			ReportService reportService = ReportService.getInstance();
+			Report report = new Report(AppUtils.toShortDateString(AppUtils.getCurrentDate()));
+			switch (status) {
+			case Constant.PENDING_STATUS: 
+				report.setPendingCount(1);
+				reportService.add(report);
+				break;
+			case Constant.SENT_STATUS: 
+				report.setSentCount(1);
+				reportService.add(report);
+				break;
+			case Constant.UNSENT_STATUS: 
+				report.setUnsentCount(1);
+				reportService.add(report);
+				break;
+			case Constant.CANCELLED_STATUS: 
+				report.setCancelledCount(1);
+				reportService.add(report);
+				break;
+			default:
+				break;
+			}
+		} catch (CommonException e) {
+			logger.error(e.getMessage(), e.getCause());
+		}
+		
 	}
 	
 	/**
@@ -148,6 +190,7 @@ public class StatisticsCronServlet extends HttpServlet {
 				} else {
 					tube.setStatus(Constant.CANCELLED_STATUS);
 					tubeService.update(tube);
+					addReport(Constant.UNSENT_STATUS);
 					return false;
 				}
 			} catch (CommonException e) {

@@ -1,6 +1,8 @@
 package com.ltu.yealtube.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
@@ -176,4 +178,45 @@ public class StatisticsService {
 	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
 		return statisticsDao.listByParent(parentId, cursorString, count);
 	}
+	
+	/**
+	 * Gets the average.
+	 *
+	 * @param parentId the parent id
+	 * @return the average
+	 */
+	public Integer getAverage(String parentId) {
+		StatisticsService statisticsService = StatisticsService.getInstance();
+		CollectionResponse<Statistics> result = statisticsService.listByParent(parentId, null, null);
+		if (result != null) {
+			List<Statistics> list = new ArrayList<Statistics>(result.getItems());
+			
+			int totalView = 0;
+			int viewCount = list.get(0).getViewCount();
+			int likeCount = list.get(0).getLikeCount();
+			int dislikeCount = list.get(0).getDislikeCount();
+			int favoriteCount = list.get(0).getFavoriteCount();
+			int commentCount = list.get(0).getCommentCount();
+			
+			for (int i = 1; i < list.size(); i++) {
+				Statistics item = list.get(i);
+				totalView += (item.getViewCount() - viewCount);
+				totalView += (item.getLikeCount() - likeCount) * 4;
+				totalView -= (item.getDislikeCount() - dislikeCount) * 5;
+				totalView += (item.getFavoriteCount() - favoriteCount) * 3;
+				totalView += (item.getCommentCount() - commentCount) * 4;
+				
+				viewCount = item.getViewCount();
+				likeCount = item.getLikeCount();
+				dislikeCount = item.getDislikeCount();
+				favoriteCount = item.getFavoriteCount();
+				commentCount = item.getCommentCount();
+			}
+			
+			int average = totalView/(list.size()-1);
+			return average;
+		}
+		return 0;
+	}
+	
 }
