@@ -25,9 +25,9 @@ import com.ltu.yealtube.service.TubeService;
 import com.ltu.yealtube.utils.AppUtils;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
-
 /**
  * The Class StatisticsCronServlet.
+ * 
  * @author uyphu
  */
 @SuppressWarnings("serial")
@@ -35,20 +35,20 @@ public class StatisticsCronServlet extends HttpServlet {
 
 	/** The Constant logger. */
 	private static final Logger logger = Logger.getLogger(StatisticsCronServlet.class);
-	
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		try {
 			logger.info("Statistics Cron Job has been executed");
-			
+
 			TubeService tubeService = TubeService.getInstance();
 			StatisticsService statisticsService = StatisticsService.getInstance();
 			String cursor = null;
-			
+
 			do {
-				//CollectionResponse<Tube> tubes = tubeService.list(cursor, Constant.MAX_RECORDS);
+				// CollectionResponse<Tube> tubes = tubeService.list(cursor,
+				// Constant.MAX_RECORDS);
 				CollectionResponse<Tube> tubes = tubeService.searchTubes("status <= ", 3, cursor, Constant.MAX_RECORDS);
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
@@ -59,7 +59,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							calendar.setTime(createdAt);
 							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
 							if (modifiedAt.after(calendar.getTime())) {
-								tube.setStatus(Constant.IN_WORK_STATUS);								
+								tube.setStatus(Constant.IN_WORK_STATUS);
 								tubeService.update(tube);
 							} else {
 								Statistics statistics = statisticsService.insert(tube.getId());
@@ -69,11 +69,11 @@ public class StatisticsCronServlet extends HttpServlet {
 						} else if (Constant.IN_WORK_STATUS == tube.getStatus()) {
 							validateStatistics(tube.getId());
 						} else if (Constant.APPROVED_STATUS == tube.getStatus()) {
-							//send tube to yealtube
+							// send tube to yealtube
 							try {
-								boolean flag = YoutubeUtil.sendTube(tube.getId());
-								if (!flag){
-									
+								boolean flag = YoutubeUtil.sendTube(tube.getId(), String.valueOf(tube.getRating()));
+								if (!flag) {
+
 									tube.setStatus(Constant.UNSENT_STATUS);
 									addReport(Constant.UNSENT_STATUS);
 								} else {
@@ -86,45 +86,46 @@ public class StatisticsCronServlet extends HttpServlet {
 								addReport(Constant.UNSENT_STATUS);
 							}
 							tubeService.update(tube);
-							
-						} 
+
+						}
 					}
 					cursor = tubes.getNextPageToken();
 				} else {
 					cursor = null;
 				}
-				
+
 			} while (cursor != null);
-			 
+
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {
 			logger.error(ex.getMessage(), ex.getCause());
 		}
 	}
-	
+
 	/**
 	 * Adds the report.
-	 *
-	 * @param status the status
+	 * 
+	 * @param status
+	 *            the status
 	 */
 	private void addReport(int status) {
 		try {
 			ReportService reportService = ReportService.getInstance();
 			Report report = new Report(AppUtils.toShortDateString(AppUtils.getCurrentDate()));
 			switch (status) {
-			case Constant.PENDING_STATUS: 
+			case Constant.PENDING_STATUS:
 				report.setPendingCount(1);
 				reportService.add(report);
 				break;
-			case Constant.SENT_STATUS: 
+			case Constant.SENT_STATUS:
 				report.setSentCount(1);
 				reportService.add(report);
 				break;
-			case Constant.UNSENT_STATUS: 
+			case Constant.UNSENT_STATUS:
 				report.setUnsentCount(1);
 				reportService.add(report);
 				break;
-			case Constant.CANCELLED_STATUS: 
+			case Constant.CANCELLED_STATUS:
 				report.setCancelledCount(1);
 				reportService.add(report);
 				break;
@@ -134,13 +135,14 @@ public class StatisticsCronServlet extends HttpServlet {
 		} catch (CommonException e) {
 			logger.error(e.getMessage(), e.getCause());
 		}
-		
+
 	}
-	
+
 	/**
 	 * Validate statistics.
-	 *
-	 * @param videoId the video id
+	 * 
+	 * @param videoId
+	 *            the video id
 	 * @return true, if successful
 	 */
 	private boolean validateStatistics(String videoId) {
@@ -165,25 +167,34 @@ public class StatisticsCronServlet extends HttpServlet {
 			int dislikeCount = list.get(0).getDislikeCount();
 			int favoriteCount = list.get(0).getFavoriteCount();
 			int commentCount = list.get(0).getCommentCount();
-			
+			int ratingValue = AppUtils.getParmValue("RATING_PARAM") != 0 ? AppUtils.getParmValue("RATING_PARAM") : Constant.RATING_PARAM;
+			float percent = ratingValue / list.size();
+			float rating = 0;
+
 			for (int i = 1; i < list.size(); i++) {
 				Statistics item = list.get(i);
 				totalView += (item.getViewCount() - viewCount);
 				totalView += (item.getLikeCount() - likeCount) * 4;
-				totalView -= (item.getDislikeCount() - dislikeCount) * 5;
-				totalView += (item.getFavoriteCount() - favoriteCount) * 3;
-				totalView += (item.getCommentCount() - commentCount) * 4;
-				
+				totalView -= (item.getDislikeCount() - dislikeCount) * 7;
+				totalView += (item.getFavoriteCount() - favoriteCount) * 4;
+				totalView += (item.getCommentCount() - commentCount) * 3;
+
 				viewCount = item.getViewCount();
 				likeCount = item.getLikeCount();
 				dislikeCount = item.getDislikeCount();
 				favoriteCount = item.getFavoriteCount();
 				commentCount = item.getCommentCount();
+
+				float r = totalView
+						/ (viewCount + likeCount * 4 - dislikeCount * 7 + favoriteCount * 4 + commentCount * 3);
+				rating += r > percent ? percent : r;
 			}
-			
-			int average = totalView/(list.size()-1);
+
+			int average = totalView / (list.size() - 1);
 			try {
-				if (average > Constant.MAX_AVERAGE) {
+				tube.setRating(Math.round(rating*100)/100.0f);
+				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE") : Constant.MAX_AVERAGE;
+				if (average > maxAverageValue) {
 					tube.setStatus(Constant.APPROVED_STATUS);
 					tubeService.update(tube);
 					return true;
@@ -197,14 +208,13 @@ public class StatisticsCronServlet extends HttpServlet {
 				logger.error(e.getMessage(), e.getCause());
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);
 	}
-	
+
 }

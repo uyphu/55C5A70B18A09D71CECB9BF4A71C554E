@@ -1,11 +1,15 @@
 package com.ltu.yealtube.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.ltu.yealtube.constants.Constant;
 
@@ -70,5 +74,25 @@ public class AppUtils {
 	public static String toShortDateString(Date date) {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constant.SHORT_DATE_FORMAT);
 		return DATE_FORMAT.format(date);
+	}
+	
+	public static int getParmValue(String id) {
+		if (id != null) {
+			String url = "https://yealtubetest.appspot.com/_ah/api/paramvalueendpoint/v1/paramvalue/" + id;
+			JSONObject jsonObject;
+			try {
+				jsonObject = APIUtils.get(new URL(url));
+				if (jsonObject != null && jsonObject.getString("value") != null) {
+					return Integer.parseInt(jsonObject.getString("value"));
+				}
+			} catch (MalformedURLException e) {
+				log.error(e.getMessage(), e.getCause());
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage(), e.getCause());
+			} catch (JSONException e) {
+				log.error(e.getMessage(), e.getCause());
+			}
+		}
+		return 0;
 	}
 }

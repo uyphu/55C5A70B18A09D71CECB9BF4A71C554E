@@ -15,6 +15,7 @@ import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.ltu.yealtube.dao.StatisticsDao;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Tube.
  * @author uyphu
@@ -30,8 +31,13 @@ public class Tube {
 	@Index
 	private String title;
 	
+	/** The view count. */
 	@Index
 	private int viewCount;
+	
+	/** The rating. */
+	@Index
+	private float rating;
 	
 	/** The description. */
 	//@Index
@@ -243,12 +249,40 @@ public class Tube {
 		this.modifiedAt = modifiedAt;
 	}
 	
+	/**
+	 * Gets the view count.
+	 *
+	 * @return the view count
+	 */
 	public int getViewCount() {
 		return viewCount;
 	}
 
+	/**
+	 * Sets the view count.
+	 *
+	 * @param viewCount the new view count
+	 */
 	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
+	}
+	
+	/**
+	 * Gets the rating.
+	 *
+	 * @return the rating
+	 */
+	public float getRating() {
+		return rating;
+	}
+
+	/**
+	 * Sets the rating.
+	 *
+	 * @param rating the new rating
+	 */
+	public void setRating(float rating) {
+		this.rating = rating;
 	}
 
 	/**
@@ -297,14 +331,38 @@ public class Tube {
 		this.status = status;
 	}
 
-	public Tube(String id, String title, int viewCount, String description, 
+	/**
+	 * Instantiates a new tube.
+	 *
+	 * @param id the id
+	 * @param title the title
+	 * @param viewCount the view count
+	 * @param rating the rating
+	 * @param description the description
+	 * @param publishedAt the published at
+	 * @param status the status
+	 */
+	public Tube(String id, String title, int viewCount, float rating, String description, 
 			Date publishedAt, int status) {
 		this.id = id;
 		this.title = title;
 		this.viewCount = viewCount;
+		this.rating = rating;
 		this.description = description;
 		this.publishedAt = publishedAt;
 		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "Tube [id=" + id + ", title=" + title + ", viewCount=" + viewCount + ", rating=" + rating + ", description="
+				+ description + ", createdAt=" + createdAt + ", modifiedAt=" + modifiedAt + ", publishedAt=" + publishedAt
+				+ ", status=" + status + ", statisticKeys=" + statisticKeys + ", statistics=" + statistics + ", getId()="
+				+ getId() + ", getTitle()=" + getTitle() + ", getDescription()=" + getDescription() + ", getCreatedAt()="
+				+ getCreatedAt() + ", getPublishedAt()=" + getPublishedAt() + ", getStatus()=" + getStatus()
+				+ ", getStatisticKeys()=" + getStatisticKeys() + ", getStatistics()=" + getStatistics() + ", getModifiedAt()="
+				+ getModifiedAt() + ", getViewCount()=" + getViewCount() + ", getRating()=" + getRating() + ", getClass()="
+				+ getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
 	}
 	
 }

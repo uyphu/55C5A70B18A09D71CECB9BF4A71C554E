@@ -5,7 +5,4 @@
         <property name="status" direction="asc" />
         <property name="createdAt" direction="desc" />
     </datastore-index>
-    <datastore-index kind="Report" ancestor="false">
-        <property name="date" direction="desc" />
-    </datastore-index>
 </datastore-indexes>

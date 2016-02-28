@@ -127,6 +127,45 @@ public class YoutubeUtil {
 	}
 	
 	/**
+	 * Gets the.
+	 *
+	 * @param url the url
+	 * @return the JSON object
+	 */
+	public static JSONObject get(URL url) {
+		try {
+
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), Constant.UTF_8));
+
+			String output;
+			StringBuilder builder = new StringBuilder();
+			while ((output = br.readLine()) != null) {
+				builder.append(output);
+			}
+
+			JSONObject json = new JSONObject(builder.toString());
+
+			conn.disconnect();
+			
+			return json;
+		}  catch (IOException e) {
+			log.error(e.getMessage(), e.getCause());
+		} catch (JSONException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+	
+	/**
 	 * Gets the tube.
 	 *
 	 * @param id the id
@@ -435,10 +474,11 @@ public class YoutubeUtil {
 	 * @param videoId the video id
 	 * @return true, if successful
 	 */
-	public static boolean sendTube(String videoId) throws CommonException {
+	public static boolean sendTube(String videoId, String rating) throws CommonException {
 		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertVideo";
 		Map<String, String> params = new HashMap<String, String>();
         params.put("id", videoId);
+        params.put("rating", rating);
         post(endpoint, params);
         return true;
 	}
@@ -544,6 +584,14 @@ public class YoutubeUtil {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+		
+		try {
+			sendTube("U_eGg7mGJys", String.valueOf(3.7f));
+		} catch (CommonException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

@@ -92,13 +92,13 @@ public class ReportDao extends AbstractDao<Report> {
 	 */
 	public CollectionResponse<Report> searchReports(String querySearch, String cursorString, Integer count)
 			throws CommonException {
-		Query<Report> query = getQuery(querySearch);
+		Query<Report> query = getQuery(querySearch).order("-date");
 		return executeQuery(query, cursorString, count);
 	}
 
 	@Override
 	public CollectionResponse<Report> list(String cursorString, Integer count) {
-		Query<Report> query = getQuery();
+		Query<Report> query = getQuery().order("-date");
 		return executeQuery(query, cursorString, count);
 	}
 

@@ -118,4 +118,7 @@ public class Constant {
 	/** The Constant ADMIN_ID. */
 	public static final Long ADMIN_ID = 1L;
 	
+	/** The Constant RATING_PARAM. */
+	public static final int RATING_PARAM = 5;
+	
 }
