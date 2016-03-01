@@ -3,7 +3,6 @@ package com.ltu.yealtube.endpoints;
 import javax.annotation.Nullable;
 import javax.inject.Named;
 
-import com.google.api.client.http.HttpMethods;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
@@ -12,7 +11,6 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.ltu.yealtube.entity.Report;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.ReportService;
-import com.ltu.yealtube.utils.AppUtils;
 
 @Api(name = "reportendpoint", namespace = @ApiNamespace(ownerDomain = "ltu.com", ownerName = "ltu.com", packagePath = "yealtube.entity"))
 public class ReportEndpoint {
