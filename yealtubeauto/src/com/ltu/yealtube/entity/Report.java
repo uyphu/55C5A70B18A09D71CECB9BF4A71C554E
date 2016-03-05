@@ -23,6 +23,8 @@ public class Report {
 	
 	private int cancelledCount;
 	
+	private int inWorkCount;
+	
 	private Date modifiedAt;
 
 	public Long getId() {
@@ -73,6 +75,14 @@ public class Report {
 		this.cancelledCount = cancelledCount;
 	}
 	
+	public int getInWorkCount() {
+		return inWorkCount;
+	}
+
+	public void setInWorkCount(int inWorkCount) {
+		this.inWorkCount = inWorkCount;
+	}
+
 	public Date getModifiedAt() {
 		return modifiedAt;
 	}
@@ -85,21 +95,23 @@ public class Report {
 		
 	}
 	
-	public Report(Long id, String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount) {
+	public Report(Long id, String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount) {
 		this.id = id;
 		this.date = date;
 		this.pendingCount = pendingCount;
 		this.sentCount = sentCount;
 		this.unsentCount = unsentCount;
 		this.cancelledCount = cancelledCount;
+		this.inWorkCount = inWorkCount;
 	}
 	
-	public Report(String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount) {
+	public Report(String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount) {
 		this.date = date;
 		this.pendingCount = pendingCount;
 		this.sentCount = sentCount;
 		this.unsentCount = unsentCount;
 		this.cancelledCount = cancelledCount;
+		this.inWorkCount = inWorkCount;
 	}
 	
 	public Report(String date) {
@@ -108,13 +120,14 @@ public class Report {
 		this.sentCount = 0;
 		this.unsentCount = 0;
 		this.cancelledCount = 0;
+		this.inWorkCount = 0;
 	}
 
 	@Override
 	public String toString() {
 		return "Report [id=" + id + ", date=" + date + ", pendingCount=" + pendingCount + ", sentCount=" + sentCount
-				+ ", unsentCount=" + unsentCount + ", cancelledCount=" + cancelledCount + ", modifiedAt=" + modifiedAt + "]";
+				+ ", unsentCount=" + unsentCount + ", cancelledCount=" + cancelledCount + ", inWorkCount="
+				+ inWorkCount + ", modifiedAt=" + modifiedAt + "]";
 	}
 
-	
 }

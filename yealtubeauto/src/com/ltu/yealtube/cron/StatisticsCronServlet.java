@@ -68,6 +68,7 @@ public class StatisticsCronServlet extends HttpServlet {
 							}
 						} else if (Constant.IN_WORK_STATUS == tube.getStatus()) {
 							validateStatistics(tube.getId());
+							addReport(Constant.IN_WORK_STATUS);
 						} else if (Constant.APPROVED_STATUS == tube.getStatus()) {
 							// send tube to yealtube
 							try {
@@ -86,7 +87,6 @@ public class StatisticsCronServlet extends HttpServlet {
 								addReport(Constant.UNSENT_STATUS);
 							}
 							tubeService.update(tube);
-
 						}
 					}
 					cursor = tubes.getNextPageToken();
@@ -129,6 +129,10 @@ public class StatisticsCronServlet extends HttpServlet {
 				report.setCancelledCount(1);
 				reportService.add(report);
 				break;
+			case Constant.IN_WORK_STATUS:
+				report.setInWorkCount(1);
+				reportService.add(report);
+				break;
 			default:
 				break;
 			}
@@ -154,6 +158,7 @@ public class StatisticsCronServlet extends HttpServlet {
 			Tube tube = tubeService.find(videoId);
 			if (list.size() < 2) {
 				tube.setStatus(Constant.PENDING_STATUS);
+				tube.setModifiedAt(Calendar.getInstance().getTime());
 				try {
 					tubeService.update(tube);
 				} catch (CommonException e) {
