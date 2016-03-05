@@ -75,7 +75,7 @@ public class TubeEndpoint {
 		TubeService service = TubeService.getInstance();
 		return service.insert(id);
 	}
-
+	
 	/**
 	 * This method is used for updating an existing entity. If the entity does not
 	 * exist in the datastore, an exception is thrown.

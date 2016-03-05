@@ -62,6 +62,20 @@ public class StatisticsEndpoint {
 		StatisticsService service = StatisticsService.getInstance();
 		return service.insert(statistics);
 	}
+	
+	/**
+	 * Insert statistics with parent.
+	 *
+	 * @param parentId the parent id
+	 * @param statistics the statistics
+	 * @return the statistics
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "insertStatisticsWithParent", httpMethod=HttpMethods.POST, path="insertStatisticsWithParent")
+	public Statistics insertStatisticsWithParent(@Named("parentId") String parentId, Statistics statistics) throws CommonException {
+		StatisticsService service = StatisticsService.getInstance();
+		return service.insert(statistics);
+	}
 
 	/**
 	 * This method is used for updating an existing entity. If the entity does not

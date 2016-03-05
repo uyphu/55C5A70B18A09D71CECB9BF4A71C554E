@@ -15,7 +15,6 @@ import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.ltu.yealtube.dao.StatisticsDao;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Tube.
  * @author uyphu
