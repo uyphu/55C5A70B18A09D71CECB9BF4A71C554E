@@ -62,6 +62,7 @@ public class StatisticsCronServlet extends HttpServlet {
 								tube.setStatus(Constant.IN_WORK_STATUS);
 								tubeService.update(tube);
 							} else {
+								tube.setModifiedAt(Calendar.getInstance().getTime());
 								Statistics statistics = statisticsService.insert(tube.getId());
 								tube.setViewCount(statistics.getViewCount());
 								tubeService.update(tube);
