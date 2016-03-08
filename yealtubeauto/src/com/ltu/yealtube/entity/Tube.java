@@ -15,6 +15,7 @@ import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.ltu.yealtube.dao.StatisticsDao;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Tube.
  * @author uyphu
@@ -57,6 +58,10 @@ public class Tube {
 	/** The status. */
 	@Index
 	private int status;
+	
+	/** The average view. */
+	@Index
+	private int averageView;
 	
 	/** The statistic keys. */
 	@Load
@@ -283,6 +288,24 @@ public class Tube {
 	public void setRating(float rating) {
 		this.rating = rating;
 	}
+	
+	/**
+	 * Gets the average view.
+	 *
+	 * @return the average view
+	 */
+	public int getAverageView() {
+		return averageView;
+	}
+
+	/**
+	 * Sets the average view.
+	 *
+	 * @param averageView the new average view
+	 */
+	public void setAverageView(int averageView) {
+		this.averageView = averageView;
+	}
 
 	/**
 	 * Instantiates a new tube.
@@ -352,6 +375,9 @@ public class Tube {
 		this.status = status;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Tube [id=" + id + ", title=" + title + ", viewCount=" + viewCount + ", rating=" + rating + ", description="

@@ -196,9 +196,10 @@ public class StatisticsCronServlet extends HttpServlet {
 				rating += r > percent ? percent : r;
 			}
 
-			int average = totalView / (list.size() - 1);
+			int average = totalView / list.size();
 			try {
 				tube.setRating(Math.round(rating*100)/100.0f);
+				tube.setAverageView(average);
 				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE") : Constant.MAX_AVERAGE;
 				if (average > maxAverageValue) {
 					tube.setStatus(Constant.APPROVED_STATUS);
