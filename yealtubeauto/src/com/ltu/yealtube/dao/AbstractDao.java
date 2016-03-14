@@ -105,7 +105,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
 	public void delete(T t) {
 		ofy().delete().entity(t).now();
 	}
-
+	
 	@Override
 	public CollectionResponse<T> list(String cursorString, Integer count) {
 		Query<T> query = ofy().load().type(clazz);
