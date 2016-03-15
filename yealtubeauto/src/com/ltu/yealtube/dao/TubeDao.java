@@ -16,7 +16,7 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
  * The Class TubeTubeDao.
  * @author uyphu
  */
-public class TubeDao extends AbstractDao<Tube> {
+public class TubeDao extends RemoteAbstractDao<Tube> {
 	
 	/** The instance. */
 	private static TubeDao instance = null;

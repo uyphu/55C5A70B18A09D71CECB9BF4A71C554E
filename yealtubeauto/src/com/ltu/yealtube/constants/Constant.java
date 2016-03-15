@@ -95,7 +95,7 @@ public class Constant {
 	public static final String SHORT_DATE_FORMAT = "yyyy-MM-dd";
 	
 	/** The Constant MAX_VIEW. */
-	public static final int MAX_VIEW = 1100000;
+	public static final int MAX_VIEW = 3100000;
 	
 	/** The Constant MAX_RECORDS. */
 	public static final int MAX_RECORDS = 10;

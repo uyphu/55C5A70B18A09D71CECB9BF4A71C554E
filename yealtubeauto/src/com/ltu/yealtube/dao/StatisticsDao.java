@@ -17,7 +17,7 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
  * The Class StatisticsDao.
  * @author uyphu
  */
-public class StatisticsDao extends AbstractDao<Statistics> {
+public class StatisticsDao extends RemoteAbstractDao<Statistics> {
 	
 	/** The instance. */
 	private static StatisticsDao instance = null;

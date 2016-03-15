@@ -32,8 +32,8 @@ public class RemoteObjectifyFactory extends ObjectifyFactory {
 		register(Statistics.class);
 		register(Report.class);
 
-		RemoteApiOptions options = new RemoteApiOptions().server("yealtubetest.appspot.com", 443).useServiceAccountCredential(
-				"yealtubetest@appspot.gserviceaccount.com", gePrivateKey());
+		RemoteApiOptions options = new RemoteApiOptions().server("yealtubecrontest.appspot.com", 443).useServiceAccountCredential(
+				"yealtubecrontest2@yealtubecrontest.iam.gserviceaccount.com", gePrivateKey());
 		remotely = new Remotely(options, new RemoteCheck() {
 			@Override
 			public boolean isRemote(String namespace) {
@@ -54,7 +54,7 @@ public class RemoteObjectifyFactory extends ObjectifyFactory {
 	 */
 	private PrivateKey gePrivateKey() {
 		try {
-			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("yealtubetest-8eac9a49b0a0.p12");
+			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("yealtubecrontest-6dfab8e00486.p12");
 			PrivateKey privateKey = SecurityUtils.loadPrivateKeyFromKeyStore(
 				      SecurityUtils.getPkcs12KeyStore(), inputStream, "notasecret",
 				      "privatekey", "notasecret");

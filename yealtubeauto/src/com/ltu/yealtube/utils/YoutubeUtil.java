@@ -310,7 +310,7 @@ public class YoutubeUtil {
 		List<Tube> tubes = new ArrayList<Tube>();
 		try {
 			String pageToken = null;
-			//int count = 0;
+			int count = 0;
 			do {
 				URL url = getSearchUrl(pageToken);
 				JSONObject json = callYoutube(url);
@@ -329,37 +329,22 @@ public class YoutubeUtil {
 									if (statistics.getViewCount() < Constant.MAX_VIEW) {
 										return tubes;
 									} else {
-										//FIXME remove calculate when uploading production
-//										SimpleDateFormat format = new SimpleDateFormat(Constant.DATE_FORMAT);
-//										System.out.println("........");
-//										
-//										Long start = Calendar.getInstance().getTime().getTime();
-//										System.out.println("Start: "+ start.toString());
-//										System.out.println(format.format(Calendar.getInstance().getTime()));
 										if (hasGoodComment(videoId)) {
 											List<Statistics> list = new ArrayList<Statistics>();
 											list.add(statistics);
 											tube.setStatistics(list);
 											tubes.add(tube);
-//											System.out.println("......................Added: "+ videoId);
 										} 
-//										else {
-//											System.out.println("Not added: "+ videoId);
-//										}
-//										Long end = Calendar.getInstance().getTime().getTime();
-//										System.out.println("End: "+ end.toString());
-//										System.out.println(format.format(Calendar.getInstance().getTime()));
-//										
-//										System.out.println("Duratin: "+ String.valueOf((end - start)/1000));
+
 									}
 								}
 							}
 						}
 					}
 				}
-//				System.out.println(count);
-//				count++;
-			} while (true);
+				System.out.println(count);
+				count++;
+			} while (count <= 3);
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
