@@ -3,8 +3,11 @@ package com.ltu.yealtube.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.dao.ReportDao;
 import com.ltu.yealtube.entity.Report;
 import com.ltu.yealtube.exeptions.CommonException;
@@ -16,6 +19,9 @@ import com.ltu.yealtube.utils.AppUtils;
  * @author uyphu
  */
 public class ReportService {
+	
+	/** The Constant logger. */
+	private static final Logger logger = Logger.getLogger(TubeService.class);
 
 	/** The instance. */
 	private static ReportService instance = null;
@@ -182,4 +188,50 @@ public class ReportService {
 		return contains;
 	}
 	
+	/**
+	 * Adds the report.
+	 *
+	 * @param status the status
+	 */
+	public void addReport(int status) {
+		try {
+			ReportService reportService = ReportService.getInstance();
+			Report report = new Report(AppUtils.toShortDateString(AppUtils.getCurrentDate()));
+			switch (status) {
+			case Constant.PENDING_STATUS:
+				report.setPendingCount(1);
+				reportService.add(report);
+				break;
+			case Constant.SENT_STATUS:
+				report.setSentCount(1);
+				reportService.add(report);
+				break;
+			case Constant.UNSENT_STATUS:
+				report.setUnsentCount(1);
+				reportService.add(report);
+				break;
+			case Constant.CANCELLED_STATUS:
+				report.setCancelledCount(1);
+				reportService.add(report);
+				break;
+			case Constant.IN_WORK_STATUS:
+				report.setInWorkCount(1);
+				reportService.add(report);
+				break;
+			case Constant.EXCEPTION_STATUS:
+				report.setExceptionCount(1);
+				reportService.add(report);
+				break;
+			case Constant.PROCESS_STATUS:
+				report.setProcessCount(1);
+				reportService.add(report);
+				break;
+			default:
+				break;
+			}
+		} catch (CommonException e) {
+			logger.error(e.getMessage(), e.getCause());
+		}
+	}
+
 }

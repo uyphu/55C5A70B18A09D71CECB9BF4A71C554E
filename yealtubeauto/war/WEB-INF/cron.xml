@@ -15,4 +15,14 @@
 		<description>Automatically getting statistics</description>
 		<schedule>every 2 hours</schedule>
 	</cron>
+	<cron>
+		<url>/cron/processcron</url>
+		<description>Automatically process</description>
+		<schedule>every 2 hours</schedule>
+	</cron>
+	<cron>
+		<url>/cron/approvecron</url>
+		<description>Automatically approve</description>
+		<schedule>every 2 hours</schedule>
+	</cron>
 </cronentries>

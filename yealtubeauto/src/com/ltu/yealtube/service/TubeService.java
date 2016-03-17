@@ -20,6 +20,9 @@ import com.ltu.yealtube.utils.YoutubeUtil;
  * @author uyphu
  */
 public class TubeService {
+	
+//	/** The Constant logger. */
+//	private static final Logger logger = Logger.getLogger(TubeService.class);
 
 	/** The instance. */
 	private static TubeService instance = null;
@@ -93,9 +96,10 @@ public class TubeService {
 	 */
 	public Tube update(Tube tube) throws CommonException {
 		if (tube != null && tube.getId() != null) {
-			if (!containsTube(tube)) {
-				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
-			} 
+			//FIXME Phu
+//			if (!containsTube(tube)) {
+//				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
+//			} 
 			tube.setModifiedAt(Calendar.getInstance().getTime());
 			return tubeDao.update(tube);
 		} else {
@@ -113,9 +117,10 @@ public class TubeService {
 	 */
 	public Tube update(String id, Integer status) throws CommonException {
 		if (id != null && status != null) {
-			if (!containsTube(id)) {
-				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
-			} 
+			//FIXME Phu
+//			if (!containsTube(id)) {
+//				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
+//			} 
 			Tube tube = find(id);
 			tube.setStatus(status);
 			tube.setModifiedAt(Calendar.getInstance().getTime());
@@ -133,9 +138,10 @@ public class TubeService {
 	 */
 	public void delete(Tube tube) throws CommonException {
 		if (tube != null && tube.getId() != null) {
-			if (!containsTube(tube)) {
-				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
-			} 
+			//FIXME Phu
+//			if (!containsTube(tube)) {
+//				throw new CommonException(HttpStatusCodes.STATUS_CODE_NOT_FOUND, ErrorCodeDetail.ERROR_RECORD_NOT_FOUND.getMsg());
+//			} 
 			tubeDao.delete(tube);
 		} else {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_BAD_GATEWAY, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
@@ -285,4 +291,5 @@ public class TubeService {
 			throws CommonException {
 		return tubeDao.searchTubes(field, value, cursorString, count);
 	}
+	
 }

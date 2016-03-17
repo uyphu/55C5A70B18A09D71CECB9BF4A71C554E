@@ -28,6 +28,26 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>ProcessCronServlet</servlet-name>
+		<servlet-class>com.ltu.yealtube.cron.ProcessCronServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ProcessCronServlet</servlet-name>
+		<url-pattern>/cron/processcron</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ApproveCronServlet</servlet-name>
+		<servlet-class>com.ltu.yealtube.cron.ApproveCronServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ApproveCronServlet</servlet-name>
+		<url-pattern>/cron/approvecron</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>YealtubeRemoveCronServlet</servlet-name>
 		<servlet-class>com.ltu.yealtube.cron.YealtubeRemoveCronServlet</servlet-class>
 	</servlet>

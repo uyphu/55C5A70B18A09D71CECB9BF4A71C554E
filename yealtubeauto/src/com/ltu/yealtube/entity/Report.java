@@ -11,20 +11,24 @@ public class Report {
 
 	@Id
 	private Long id;
-	
+
 	@Index
 	private String date;
-	
+
 	private int pendingCount;
-	
+
 	private int sentCount;
-	
+
 	private int unsentCount;
-	
+
 	private int cancelledCount;
-	
+
 	private int inWorkCount;
-	
+
+	private int exceptionCount;
+
+	private int processCount;
+
 	private Date modifiedAt;
 
 	public Long getId() {
@@ -74,7 +78,7 @@ public class Report {
 	public void setCancelledCount(int cancelledCount) {
 		this.cancelledCount = cancelledCount;
 	}
-	
+
 	public int getInWorkCount() {
 		return inWorkCount;
 	}
@@ -87,15 +91,32 @@ public class Report {
 		return modifiedAt;
 	}
 
+	public int getExceptionCount() {
+		return exceptionCount;
+	}
+
+	public int getProcessCount() {
+		return processCount;
+	}
+
+	public void setProcessCount(int processCount) {
+		this.processCount = processCount;
+	}
+
+	public void setExceptionCount(int exceptionCount) {
+		this.exceptionCount = exceptionCount;
+	}
+
 	public void setModifiedAt(Date modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
 
 	public Report() {
-		
+
 	}
-	
-	public Report(Long id, String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount) {
+
+	public Report(Long id, String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount,
+			int exceptionCount, int processCount) {
 		this.id = id;
 		this.date = date;
 		this.pendingCount = pendingCount;
@@ -103,17 +124,22 @@ public class Report {
 		this.unsentCount = unsentCount;
 		this.cancelledCount = cancelledCount;
 		this.inWorkCount = inWorkCount;
+		this.exceptionCount = exceptionCount;
+		this.processCount = processCount;
 	}
-	
-	public Report(String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount) {
+
+	public Report(String date, int pendingCount, int sentCount, int unsentCount, int cancelledCount, int inWorkCount,
+			int exceptionCount, int processCount) {
 		this.date = date;
 		this.pendingCount = pendingCount;
 		this.sentCount = sentCount;
 		this.unsentCount = unsentCount;
 		this.cancelledCount = cancelledCount;
 		this.inWorkCount = inWorkCount;
+		this.exceptionCount = exceptionCount;
+		this.processCount = processCount;
 	}
-	
+
 	public Report(String date) {
 		this.date = date;
 		this.pendingCount = 0;
@@ -121,13 +147,15 @@ public class Report {
 		this.unsentCount = 0;
 		this.cancelledCount = 0;
 		this.inWorkCount = 0;
+		this.exceptionCount = 0;
+		this.processCount = 0;
 	}
 
 	@Override
 	public String toString() {
 		return "Report [id=" + id + ", date=" + date + ", pendingCount=" + pendingCount + ", sentCount=" + sentCount
-				+ ", unsentCount=" + unsentCount + ", cancelledCount=" + cancelledCount + ", inWorkCount="
-				+ inWorkCount + ", modifiedAt=" + modifiedAt + "]";
+				+ ", unsentCount=" + unsentCount + ", cancelledCount=" + cancelledCount + ", inWorkCount=" + inWorkCount
+				+ ", exceptionCount=" + exceptionCount + ", processCount=" + processCount + ", modifiedAt=" + modifiedAt + "]";
 	}
 
 }

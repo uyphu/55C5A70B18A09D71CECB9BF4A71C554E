@@ -63,6 +63,7 @@ public abstract class RemoteAbstractDao<T> implements Dao<T> {
 	@Override
 	public T find(final String id) {
 		item = null;
+		System.out.println(id);
 		run(new VoidWork() {
 			
 			@Override
@@ -201,6 +202,28 @@ public abstract class RemoteAbstractDao<T> implements Dao<T> {
 			}
 		});
 		return response;
+	}
+	
+	@Override
+	public CollectionResponse<T> search(final String field, final Object value, final String cursorString, final Integer count) {
+		response = null;
+		System.out.println(field);
+		run(new VoidWork() {
+			
+			@Override
+			public void vrun() {
+				Query<T> query = ofy().load().type(clazz).filter(field, value);
+				response = executeQuery(query, cursorString, count);
+				ofy().clear();
+			}
+		});
+		return response;
+	}
+	
+	@Override
+	public CollectionResponse<T> search(final Map<String, Object> columns, String cursorString, Integer count) {
+		 Query<T> query = getQuery(columns);
+		 return executeQuery(query, cursorString, count);
 	}
 
 	/**

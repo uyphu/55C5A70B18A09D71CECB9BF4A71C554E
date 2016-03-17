@@ -31,6 +31,9 @@ public class Constant {
     /** The Constant ACTIVATED. */
     public static final boolean ACTIVATED = true;
     
+    /** The Constant EXCEPTION_STATUS. */
+    public static final int EXCEPTION_STATUS = -1;
+    
     /** The Constant IN_WORK_STATUS. */
     public static final int IN_WORK_STATUS = 0;
     
@@ -48,6 +51,9 @@ public class Constant {
     
     /** The Constant SENT_STATUS. */
     public static final int SENT_STATUS = 5;
+    
+    /** The Constant PROCESS_STATUS. */
+    public static final int PROCESS_STATUS = 6;
     
     /** The Constant UTF_8. */
     public static final String UTF_8 = "UTF-8";

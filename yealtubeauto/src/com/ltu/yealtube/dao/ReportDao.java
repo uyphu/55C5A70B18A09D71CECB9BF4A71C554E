@@ -14,7 +14,7 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
  * The Class ReportDao.
  * @author uyphu
  */
-public class ReportDao extends RemoteAbstractDao<Report> {
+public class ReportDao extends AbstractDao<Report> {
 	
 	/** The instance. */
 	private static ReportDao instance = null;

@@ -1,6 +1,7 @@
 package com.ltu.yealtube.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.api.server.spi.response.CollectionResponse;
 import com.googlecode.objectify.Key;
@@ -98,6 +99,25 @@ public interface Dao<T> {
 	 * @return the collection response
 	 */
 	public CollectionResponse<T> list(String cursorString, Integer count);
+	
+	/**
+	 * Search.
+	 *
+	 * @param field the field
+	 * @param value the value
+	 * @return the collection response
+	 */
+	public CollectionResponse<T> search(String field, Object value, String cursorString, Integer count);
+	
+	/**
+	 * Search.
+	 *
+	 * @param queryString the query string
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 */
+	public CollectionResponse<T> search(final Map<String, Object> columns, String cursorString, Integer count);
 	
 	/**
 	 * Builds the collection response.
