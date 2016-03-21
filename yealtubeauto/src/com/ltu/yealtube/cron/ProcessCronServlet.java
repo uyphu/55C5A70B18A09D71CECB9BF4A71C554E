@@ -41,6 +41,7 @@ public class ProcessCronServlet extends HttpServlet {
 				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.IN_WORK_STATUS, cursor, Constant.MAX_RECORDS);
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
+						logger.info("Processint tube: " + tube.getId());
 						if (validateStatistics(tube)) {
 							reportService.addReport(Constant.IN_WORK_STATUS);
 						}

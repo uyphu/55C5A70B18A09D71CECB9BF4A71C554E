@@ -18,10 +18,10 @@ import com.ltu.yealtube.utils.YoutubeUtil;
 
 @SuppressWarnings("serial")
 public class ApproveCronServlet extends HttpServlet {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = Logger.getLogger(ApproveCronServlet.class);
-	
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		ReportService reportService = ReportService.getInstance();
@@ -29,15 +29,17 @@ public class ApproveCronServlet extends HttpServlet {
 			logger.info("Statistics Cron Job has been executed");
 
 			TubeService tubeService = TubeService.getInstance();
-			
+
 			String cursor = null;
 
 			do {
-				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.APPROVED_STATUS, cursor, Constant.MAX_RECORDS);
+				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.APPROVED_STATUS, cursor,
+						Constant.MAX_RECORDS);
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
 						// send tube to yealtube
 						try {
+							logger.debug("Send tube: " + tube.getId() + " with rating: " + String.valueOf(tube.getRating()));
 							boolean flag = YoutubeUtil.sendTube(tube.getId(), String.valueOf(tube.getRating()));
 							if (!flag) {
 								tube.setStatus(Constant.UNSENT_STATUS);

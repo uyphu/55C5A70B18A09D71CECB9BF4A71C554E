@@ -18,6 +18,7 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
+import com.ltu.yealtube.utils.AppUtils;
 
 /**
  * The Class StatisticsCronServlet.
@@ -32,7 +33,7 @@ public class StatisticsCronServlet extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
+
 		ReportService reportService = ReportService.getInstance();
 
 		try {
@@ -40,9 +41,11 @@ public class StatisticsCronServlet extends HttpServlet {
 			TubeService tubeService = TubeService.getInstance();
 			StatisticsService statisticsService = StatisticsService.getInstance();
 			String cursor = null;
-			
+
 			do {
-				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.PENDING_STATUS, cursor, Constant.MAX_RECORDS);
+				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.PENDING_STATUS, cursor,
+						Constant.MAX_RECORDS);
+
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
 						Date createdAt = tube.getCreatedAt();
@@ -50,6 +53,8 @@ public class StatisticsCronServlet extends HttpServlet {
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(createdAt);
 						calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
+						logger.debug("Tube: " + tubes.getItems().size() + " CreatedAt: " + AppUtils.toString(createdAt)
+								+ " ModifiedAt: " + AppUtils.toString(modifiedAt));
 						if (modifiedAt.after(calendar.getTime())) {
 							tube.setStatus(Constant.IN_WORK_STATUS);
 							tubeService.update(tube);
@@ -67,7 +72,7 @@ public class StatisticsCronServlet extends HttpServlet {
 				}
 
 			} while (cursor != null);
-			
+
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {
 			logger.error(ex.getMessage(), ex.getCause());
