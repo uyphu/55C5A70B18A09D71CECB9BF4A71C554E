@@ -18,7 +18,7 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
-import com.ltu.yealtube.utils.AppUtils;
+import com.ltu.yealtube.utils.YoutubeUtil;
 
 /**
  * The Class StatisticsCronServlet.
@@ -48,25 +48,38 @@ public class StatisticsCronServlet extends HttpServlet {
 
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
-						Date createdAt = tube.getCreatedAt();
-						Date modifiedAt = tube.getModifiedAt();
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(createdAt);
-						calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
-						logger.debug("Tube: " + tubes.getItems().size() + " CreatedAt: " + AppUtils.toString(createdAt)
-								+ " ModifiedAt: " + AppUtils.toString(modifiedAt));
-						if (modifiedAt.after(calendar.getTime())) {
-							tube.setStatus(Constant.IN_WORK_STATUS);
-							tubeService.update(tube);
+						if (YoutubeUtil.isValid(tube.getId())) {
+							//logger.debug("Start: " + tube.getId());
+							Date createdAt = tube.getCreatedAt();
+							Date modifiedAt = tube.getModifiedAt();
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(createdAt);
+							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
+//							logger.debug("Tube: " + tube.getId() + " CreatedAt: " + AppUtils.toString(createdAt)
+//									+ " ModifiedAt: " + AppUtils.toString(modifiedAt));
+							if (modifiedAt.after(calendar.getTime())) {
+								//logger.debug("After: " + AppUtils.toString(modifiedAt));
+								tube.setStatus(Constant.IN_WORK_STATUS);
+								tubeService.update(tube);
+							} else {
+								//logger.debug("Else: " + AppUtils.toString(modifiedAt));
+								tube.setModifiedAt(Calendar.getInstance().getTime());
+								//logger.debug("Insert: " + tube.toString());
+								Statistics statistics = statisticsService.insert(tube.getId());
+								tube.setViewCount(statistics.getViewCount());
+								//logger.debug("update: " + tube.toString());
+								tubeService.update(tube);
+								//logger.debug("Report: " + tube.toString());
+								reportService.addReport(Constant.PROCESS_STATUS);
+							}
+							//logger.debug("End: " + tube.getId());
 						} else {
-							tube.setModifiedAt(Calendar.getInstance().getTime());
-							Statistics statistics = statisticsService.insert(tube.getId());
-							tube.setViewCount(statistics.getViewCount());
-							tubeService.update(tube);
-							reportService.addReport(Constant.PROCESS_STATUS);
+							//logger.debug("Delete: " + tube.getId());
+							tubeService.delete(tube);
 						}
 					}
 					cursor = tubes.getNextPageToken();
+					//logger.debug("Cursor: " + tubes.getNextPageToken());
 				} else {
 					cursor = null;
 				}
@@ -75,7 +88,7 @@ public class StatisticsCronServlet extends HttpServlet {
 
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {
-			logger.error(ex.getMessage(), ex.getCause());
+			logger.error("Error: "+ ex.getMessage(), ex.getCause());
 			reportService.addReport(Constant.EXCEPTION_STATUS);
 		}
 	}
@@ -84,5 +97,5 @@ public class StatisticsCronServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);
 	}
-
+	
 }

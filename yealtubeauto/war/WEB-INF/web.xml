@@ -41,6 +41,16 @@
 		<servlet-name>ApproveCronServlet</servlet-name>
 		<servlet-class>com.ltu.yealtube.cron.ApproveCronServlet</servlet-class>
 	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/cron/test</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.ltu.yealtube.cron.TestServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>ApproveCronServlet</servlet-name>

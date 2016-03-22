@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
 <log4j:configuration debug="true">
-    <appender name="le" class="com.logentries.log4j.LogentriesAppender">
-        <param name="Token" value="HIDDEN"/>
-        <param name="Ssl" value="false"/>
-        <param name="Debug" value="true"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{EEE MMM dd HH:mm:ss ZZZ yyyy}, (%F:%L) %-5p: %m"/>
-        </layout>
-    </appender>
-    <logger name="example">
-        <level value="debug"/>
-    </logger>
-    <root>
-        <priority value="debug"></priority>
-        <appender-ref ref="le"/>
-    </root>
+    <appender name="A1" class="org.apache.log4j.ConsoleAppender">
+	    <layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" 
+			value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+	    </layout>
+	</appender>
+
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="A1" />
+	</root>
 </log4j:configuration>

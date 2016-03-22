@@ -208,7 +208,7 @@ public class YoutubeUtil {
 			JSONObject json = getVideo(id, "statistics");
 			if (json != null) {
 				JSONArray jsonArray = (JSONArray)json.get("items");
-				if (jsonArray != null) {
+				if (jsonArray != null && jsonArray.length() > 0) {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
 					item = new JSONObject(item.get("statistics").toString());
 					tube.setId(id);
@@ -422,11 +422,9 @@ public class YoutubeUtil {
 	 */
 	private static boolean hasGoodWord(String text) {
 		text = text.toLowerCase();
-		String[] words = { "lol", "good", "hay", "thank you", "like", "best",
-				"thich", "qua dinh", "qua hay", "tuyet voi", "fantastic",
-				"wonderful", "perfect", "incredible", "unbelievable", "vui",
-				"vui qua", "happy", "bien", "ok", "enjoy", "nice", "pretty",
-				"beautiful", "well", "awsome", "loz﻿"};
+		String[] words = { "lol", "good", "hay", "thank you", "like", "best", "thich", "qua dinh", "qua hay", "tuyet voi",
+				"fantastic", "wonderful", "perfect", "incredible", "unbelievable", "vui", "vui qua", "happy", "bien", "ok",
+				"enjoy", "nice", "pretty", "beautiful", "well", "awsome", "loz﻿" };
 		for (int i = 0; i < words.length; i++) {
 			if (text.indexOf(words[i]) != -1) {
 				return true;
@@ -515,13 +513,7 @@ public class YoutubeUtil {
 			if (status != 200) {
 				throw new CommonException(status, ErrorCodeDetail.ERROR_INPUT_NOT_VALID.getMsg());
 			}
-//			BufferedReader br = new BufferedReader(new InputStreamReader(
-//					(conn.getInputStream())));
-//			String output;
-//			System.out.println("Output from Server .... \n");
-//			while ((output = br.readLine()) != null) {
-//				System.out.println(output);
-//			}
+
 		} catch (IOException e) {
 			if (conn != null) {
 				conn.disconnect();
@@ -532,6 +524,21 @@ public class YoutubeUtil {
 				conn.disconnect();
 			}
 		}
+	}
+	
+	public static boolean isValid(String id) {
+		try {
+			String urlString = "https://www.googleapis.com/youtube/v3/videos?part=id&id="+id+"&key="+Constant.API_KEY;
+			JSONObject jsonObject = callYoutube(new URL(urlString));
+			JSONArray jsonArray = (JSONArray)jsonObject.get("items");
+			if (jsonArray != null && jsonArray.length() > 0) {
+				return true;
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return false;
+		
 	}
 	
 	/**
@@ -571,8 +578,9 @@ public class YoutubeUtil {
 //		}
 		
 		try {
-			sendTube("U_eGg7mGJys", String.valueOf(3.7f));
-		} catch (CommonException e) {
+			//sendTube("U_eGg7mGJys", String.valueOf(3.7f));
+			System.out.println(isValid("h8RSgh-aFH4"));
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

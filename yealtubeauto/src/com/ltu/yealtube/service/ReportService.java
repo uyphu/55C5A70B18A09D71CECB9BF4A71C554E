@@ -119,6 +119,9 @@ public class ReportService {
 				oldReport.setPendingCount(oldReport.getPendingCount() + report.getPendingCount());
 				oldReport.setSentCount(oldReport.getSentCount()+ report.getSentCount());
 				oldReport.setUnsentCount(oldReport.getUnsentCount() + report.getUnsentCount());
+				oldReport.setProcessCount(oldReport.getProcessCount() + report.getProcessCount());
+				oldReport.setInWorkCount(oldReport.getInWorkCount() + report.getInWorkCount());
+				oldReport.setExceptionCount(oldReport.getExceptionCount() + report.getExceptionCount());
 				return update(oldReport);
 			}
 			return insert(report);
