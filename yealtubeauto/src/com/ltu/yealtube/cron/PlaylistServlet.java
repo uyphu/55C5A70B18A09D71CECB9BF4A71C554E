@@ -21,10 +21,10 @@ import com.ltu.yealtube.service.TubeService;
 import com.ltu.yealtube.utils.AppUtils;
 
 @SuppressWarnings("serial")
-public class TestServlet extends HttpServlet {
+public class PlaylistServlet extends HttpServlet {
 
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(TestServlet.class);
+	private static final Logger logger = Logger.getLogger(PlaylistServlet.class);
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -26,15 +26,16 @@ import org.json.JSONObject;
 import com.google.api.client.http.HttpStatusCodes;
 import com.googlecode.objectify.Key;
 import com.ltu.yealtube.constants.Constant;
+import com.ltu.yealtube.entity.Playlist;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class YoutubeUtil.
+ * 
  * @author uyphu
  */
 public class YoutubeUtil {
@@ -44,17 +45,18 @@ public class YoutubeUtil {
 
 	/**
 	 * Gets the video.
-	 *
-	 * @param id the id
-	 * @param part the part
+	 * 
+	 * @param id
+	 *            the id
+	 * @param part
+	 *            the part
 	 * @return the video
 	 */
 	public static JSONObject getVideo(String id, String part) {
 		try {
 
-			URL url = new URL(
-					"https://www.googleapis.com/youtube/v3/videos?part=" + part
-							+ "&id=" + id + "&key=" + Constant.API_KEY);
+			URL url = new URL("https://www.googleapis.com/youtube/v3/videos?part=" + part + "&id=" + id + "&key="
+					+ Constant.API_KEY);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
@@ -63,7 +65,7 @@ public class YoutubeUtil {
 				log.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
-			
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), Constant.UTF_8));
 
 			String output;
@@ -75,7 +77,7 @@ public class YoutubeUtil {
 			JSONObject json = new JSONObject(builder.toString());
 
 			conn.disconnect();
-			
+
 			return json;
 		} catch (MalformedURLException e) {
 			log.error(e.getMessage(), e.getCause());
@@ -86,11 +88,49 @@ public class YoutubeUtil {
 		}
 		return null;
 	}
-	
+
+	public static JSONObject getPlaylist(String id, String part) {
+		try {
+
+			URL url = new URL("https://www.googleapis.com/youtube/v3/playlists?part=" + part + "&id=" + id + "&key="
+					+ Constant.API_KEY);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), Constant.UTF_8));
+
+			String output;
+			StringBuilder builder = new StringBuilder();
+			while ((output = br.readLine()) != null) {
+				builder.append(output);
+			}
+
+			JSONObject json = new JSONObject(builder.toString());
+
+			conn.disconnect();
+
+			return json;
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage(), e.getCause());
+		} catch (IOException e) {
+			log.error(e.getMessage(), e.getCause());
+		} catch (JSONException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+
 	/**
 	 * Call youtube.
-	 *
-	 * @param url the url
+	 * 
+	 * @param url
+	 *            the url
 	 * @return the JSON object
 	 */
 	public static JSONObject callYoutube(URL url) {
@@ -104,7 +144,7 @@ public class YoutubeUtil {
 				log.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
-			
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), Constant.UTF_8));
 
 			String output;
@@ -116,20 +156,21 @@ public class YoutubeUtil {
 			JSONObject json = new JSONObject(builder.toString());
 
 			conn.disconnect();
-			
+
 			return json;
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			log.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the.
-	 *
-	 * @param url the url
+	 * 
+	 * @param url
+	 *            the url
 	 * @return the JSON object
 	 */
 	public static JSONObject get(URL url) {
@@ -143,7 +184,7 @@ public class YoutubeUtil {
 				log.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
-			
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), Constant.UTF_8));
 
 			String output;
@@ -155,20 +196,21 @@ public class YoutubeUtil {
 			JSONObject json = new JSONObject(builder.toString());
 
 			conn.disconnect();
-			
+
 			return json;
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			log.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the tube.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return the tube
 	 */
 	public static Tube getTube(String id) {
@@ -176,7 +218,7 @@ public class YoutubeUtil {
 			Tube tube = new Tube();
 			JSONObject json = getVideo(id, "snippet");
 			if (json != null) {
-				JSONArray jsonArray = (JSONArray)json.get("items");
+				JSONArray jsonArray = (JSONArray) json.get("items");
 				if (jsonArray != null) {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
 					item = new JSONObject(item.get("snippet").toString());
@@ -188,18 +230,76 @@ public class YoutubeUtil {
 					return tube;
 				}
 			}
-			
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
-		
+
 		return null;
 	}
-	
+
+	public static Playlist getPlayList(String id) {
+		try {
+			Playlist tube = new Playlist();
+			JSONObject json = getPlaylist(id, "snippet");
+			if (json != null) {
+				JSONArray jsonArray = (JSONArray) json.get("items");
+				if (jsonArray != null) {
+					JSONObject item = new JSONObject(jsonArray.get(0).toString());
+					item = new JSONObject(item.get("snippet").toString());
+					tube.setId(id);
+					tube.setTitle(item.getString("title"));
+					tube.setDescription(item.getString("description"));
+					SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+					tube.setPublishedAt(format.parse(item.getString("publishedAt")));
+					return tube;
+				}
+			}
+
+		} catch (Exception e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+
+		return null;
+	}
+
+	public static int getPlayListView(String id) {
+		try {
+			String pageToken = null;
+			String urlString = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + id + "&key="
+					+ Constant.API_KEY;
+			int viewCount = 0;
+			do {
+				if (pageToken != null) {
+					urlString = urlString + "&pageToken=" + pageToken;
+				}
+				JSONObject json = callYoutube(new URL(urlString));
+				if (json != null) {
+					pageToken = json.getString("nextPageToken");
+					JSONArray jsonArray = (JSONArray) json.get("items");
+					if (jsonArray != null) {
+						JSONObject item = new JSONObject(jsonArray.get(0).toString());
+						item = new JSONObject(item.getString("snippet"));
+						item = new JSONObject(item.getString("resourceId"));
+						String videoId = item.getString("videoId");
+						Tube tube = getTube(videoId);
+						viewCount += tube.getViewCount();
+					}
+				}
+			} while (pageToken == null);
+			return viewCount;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+
+		return 0;
+	}
+
 	/**
 	 * Gets the statistics.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return the statistics
 	 */
 	public static Statistics getStatistics(String id) {
@@ -207,33 +307,40 @@ public class YoutubeUtil {
 			Tube tube = new Tube();
 			JSONObject json = getVideo(id, "statistics");
 			if (json != null) {
-				JSONArray jsonArray = (JSONArray)json.get("items");
+				JSONArray jsonArray = (JSONArray) json.get("items");
 				if (jsonArray != null && jsonArray.length() > 0) {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
 					item = new JSONObject(item.get("statistics").toString());
 					tube.setId(id);
 					Statistics statistics = new Statistics();
 					statistics.setVideo(Key.create(Tube.class, id));
-					statistics.setViewCount(Integer.parseInt(item.get("viewCount") != null ? item.get("viewCount").toString() : "0"));
-					statistics.setLikeCount(Integer.parseInt(item.get("likeCount") != null ? item.get("likeCount").toString() : "0"));
-					statistics.setDislikeCount(Integer.parseInt(item.get("dislikeCount") != null ? item.get("dislikeCount").toString() : "0"));
-					statistics.setFavoriteCount(Integer.parseInt(item.get("favoriteCount") != null ? item.get("favoriteCount").toString() : "0"));
-					statistics.setCommentCount(Integer.parseInt(item.get("commentCount") != null ? item.get("commentCount").toString() : "0"));
-					//statistics.setRating(Float.parseFloat(item.get("rating") != null ? item.get("rating").toString() : "0"));
+					statistics.setViewCount(Integer.parseInt(item.get("viewCount") != null ? item.get("viewCount").toString()
+							: "0"));
+					statistics.setLikeCount(Integer.parseInt(item.get("likeCount") != null ? item.get("likeCount").toString()
+							: "0"));
+					statistics.setDislikeCount(Integer.parseInt(item.get("dislikeCount") != null ? item.get("dislikeCount")
+							.toString() : "0"));
+					statistics.setFavoriteCount(Integer.parseInt(item.get("favoriteCount") != null ? item.get("favoriteCount")
+							.toString() : "0"));
+					statistics.setCommentCount(Integer.parseInt(item.get("commentCount") != null ? item.get("commentCount")
+							.toString() : "0"));
+					// statistics.setRating(Float.parseFloat(item.get("rating")
+					// != null ? item.get("rating").toString() : "0"));
 					return statistics;
 				}
 			}
-			
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the search url.
-	 *
-	 * @param pageToken the page token
+	 * 
+	 * @param pageToken
+	 *            the page token
 	 * @return the search url
 	 */
 	private static URL getSearchUrl(String pageToken) {
@@ -244,11 +351,72 @@ public class YoutubeUtil {
 			String after = format.format(calendar.getTime()) + "Z";
 			calendar.add(Calendar.DAY_OF_YEAR, 1);
 			String before = format.format(calendar.getTime()) + "Z";
-			String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&publishedAfter="
-					+ after
-					+ "&publishedBefore="
-					+ before
-					+ "&type=video&key="
+			String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&publishedAfter=" + after
+					+ "&publishedBefore=" + before + "&type=video&key=" + Constant.API_KEY;
+			if (pageToken != null) {
+				url = url + "&pageToken=" + pageToken;
+			}
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+
+	private static URL getPlaylistUrl(String pageToken) {
+		try {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_YEAR, -45);
+			SimpleDateFormat format = new SimpleDateFormat(Constant.DATE_FORMAT);
+			String after = format.format(calendar.getTime()) + "Z";
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+			String before = format.format(calendar.getTime()) + "Z";
+			String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&publishedAfter=" + after
+					+ "&publishedBefore=" + before + "&type=playlist&key=" + Constant.API_KEY;
+			if (pageToken != null) {
+				url = url + "&pageToken=" + pageToken;
+			}
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the video url.
+	 * 
+	 * @param part
+	 *            the part
+	 * @param id
+	 *            the id
+	 * @return the video url
+	 */
+	public static URL getVideoUrl(String part, String id) {
+		try {
+			URL url = new URL("https://www.googleapis.com/youtube/v3/videos?part=" + part + "&id=" + id + "&key="
+					+ Constant.API_KEY);
+			return url;
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the comment thread url.
+	 * 
+	 * @param part
+	 *            the part
+	 * @param videoId
+	 *            the video id
+	 * @param pageToken
+	 *            the page token
+	 * @return the comment thread url
+	 */
+	public static URL getCommentThreadUrl(String part, String videoId, String pageToken) {
+		try {
+			String url = "https://www.googleapis.com/youtube/v3/commentThreads?part=" + part + "&videoId=" + videoId + "&key="
 					+ Constant.API_KEY;
 			if (pageToken != null) {
 				url = url + "&pageToken=" + pageToken;
@@ -259,51 +427,10 @@ public class YoutubeUtil {
 		}
 		return null;
 	}
-	
-	/**
-	 * Gets the video url.
-	 *
-	 * @param part the part
-	 * @param id the id
-	 * @return the video url
-	 */
-	public static URL getVideoUrl(String part, String id) {
-		try {
-			URL url = new URL(
-					"https://www.googleapis.com/youtube/v3/videos?part=" + part
-							+ "&id=" + id + "&key=" + Constant.API_KEY);
-			return url;
-		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
-		}
-		return null;
-	}
-	
-	/**
-	 * Gets the comment thread url.
-	 *
-	 * @param part the part
-	 * @param videoId the video id
-	 * @param pageToken the page token
-	 * @return the comment thread url
-	 */
-	public static URL getCommentThreadUrl(String part, String videoId, String pageToken) {
-		try {
-			String url = "https://www.googleapis.com/youtube/v3/commentThreads?part="
-					+ part + "&videoId=" + videoId + "&key=" + Constant.API_KEY;
-			if (pageToken != null) {
-				url = url + "&pageToken=" + pageToken;
-			}
-			return new URL(url);
-		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
-		}
-		return null;
-	}
-	
+
 	/**
 	 * Gets the hot tube.
-	 *
+	 * 
 	 * @return the hot tube
 	 */
 	public static List<Tube> getHotTube() {
@@ -316,7 +443,7 @@ public class YoutubeUtil {
 				JSONObject json = callYoutube(url);
 				if (json != null) {
 					pageToken = json.get("nextPageToken").toString();
-					JSONArray jsonArray = (JSONArray)json.get("items");
+					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject item = new JSONObject(jsonArray.get(i).toString());
@@ -334,7 +461,7 @@ public class YoutubeUtil {
 											list.add(statistics);
 											tube.setStatistics(list);
 											tubes.add(tube);
-										} 
+										}
 
 									}
 								}
@@ -344,17 +471,18 @@ public class YoutubeUtil {
 				}
 				System.out.println(count);
 				count++;
-			} while (count <= 3);
+			} while (count <= 5);
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return tubes;
 	}
-	
+
 	/**
 	 * Checks for good comment.
-	 *
-	 * @param videoId the video id
+	 * 
+	 * @param videoId
+	 *            the video id
 	 * @return true, if successful
 	 */
 	public static boolean hasGoodComment(String videoId) {
@@ -368,7 +496,7 @@ public class YoutubeUtil {
 				json = callYoutube(url);
 				if (json != null) {
 					pageToken = json.get("nextPageToken").toString();
-					JSONArray jsonArray = (JSONArray)json.get("items");
+					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject item = new JSONObject(jsonArray.get(i).toString());
@@ -381,43 +509,46 @@ public class YoutubeUtil {
 						}
 					}
 				}
-				count ++;
+				count++;
 			} while (count < Constant.MAX_PAGE_COMMENT);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Gets the comment.
-	 *
-	 * @param commentId the comment id
+	 * 
+	 * @param commentId
+	 *            the comment id
 	 * @return the comment
 	 */
 	public static String getComment(String commentId) {
 		URL url;
 		try {
-			String strUrl = "https://www.googleapis.com/youtube/v3/comments?part=snippet&id="+commentId+"&key="+Constant.API_KEY;
+			String strUrl = "https://www.googleapis.com/youtube/v3/comments?part=snippet&id=" + commentId + "&key="
+					+ Constant.API_KEY;
 			url = new URL(strUrl);
 			JSONObject json = callYoutube(url);
-			JSONArray jsonArray = (JSONArray)json.get("items");
+			JSONArray jsonArray = (JSONArray) json.get("items");
 			JSONObject item = new JSONObject(jsonArray.get(0).toString());
 			item = new JSONObject(item.get("snippet").toString());
-			return  item.getString("textDisplay");
+			return item.getString("textDisplay");
 		} catch (MalformedURLException e) {
 			log.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
 			log.error(e.getMessage(), e.getCause());
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Checks for good word.
-	 *
-	 * @param text the text
+	 * 
+	 * @param text
+	 *            the text
 	 * @return true, if successful
 	 */
 	private static boolean hasGoodWord(String text) {
@@ -432,16 +563,16 @@ public class YoutubeUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Gets the config.
-	 *
+	 * 
 	 * @return the config
 	 */
 	public static Properties getConfig() {
-		
+
 		try {
-			InputStream is =  YoutubeUtil.class.getClassLoader().getResourceAsStream("/config.properties");
+			InputStream is = YoutubeUtil.class.getClassLoader().getResourceAsStream("/config.properties");
 			Properties props = new Properties();
 			props.load(is);
 			return props;
@@ -450,31 +581,34 @@ public class YoutubeUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Send tube.
-	 *
-	 * @param videoId the video id
+	 * 
+	 * @param videoId
+	 *            the video id
 	 * @return true, if successful
 	 */
 	public static boolean sendTube(String videoId, String rating) throws CommonException {
 		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertVideo";
 		Map<String, String> params = new HashMap<String, String>();
-        params.put("id", videoId);
-        params.put("rating", rating);
-        post(endpoint, params);
-        return true;
+		params.put("id", videoId);
+		params.put("rating", rating);
+		post(endpoint, params);
+		return true;
 	}
-	
+
 	/**
 	 * Post.
-	 *
-	 * @param endpoint the endpoint
-	 * @param params the params
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param endpoint
+	 *            the endpoint
+	 * @param params
+	 *            the params
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	private static void post(String endpoint, Map<String, String> params)
-			throws CommonException {
+	private static void post(String endpoint, Map<String, String> params) throws CommonException {
 		URL url;
 		try {
 			url = new URL(endpoint);
@@ -486,8 +620,7 @@ public class YoutubeUtil {
 		// constructs the POST body using the parameters
 		while (iterator.hasNext()) {
 			Entry<String, String> param = iterator.next();
-			bodyBuilder.append(param.getKey()).append('=')
-					.append(param.getValue());
+			bodyBuilder.append(param.getKey()).append('=').append(param.getValue());
 			if (iterator.hasNext()) {
 				bodyBuilder.append('&');
 			}
@@ -502,8 +635,7 @@ public class YoutubeUtil {
 			conn.setUseCaches(false);
 			conn.setFixedLengthStreamingMode(bytes.length);
 			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type",
-					"application/x-www-form-urlencoded;charset=UTF-8");
+			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
 			// post the request
 			OutputStream out = conn.getOutputStream();
 			out.write(bytes);
@@ -525,12 +657,12 @@ public class YoutubeUtil {
 			}
 		}
 	}
-	
+
 	public static boolean isValid(String id) {
 		try {
-			String urlString = "https://www.googleapis.com/youtube/v3/videos?part=id&id="+id+"&key="+Constant.API_KEY;
+			String urlString = "https://www.googleapis.com/youtube/v3/videos?part=id&id=" + id + "&key=" + Constant.API_KEY;
 			JSONObject jsonObject = callYoutube(new URL(urlString));
-			JSONArray jsonArray = (JSONArray)jsonObject.get("items");
+			JSONArray jsonArray = (JSONArray) jsonObject.get("items");
 			if (jsonArray != null && jsonArray.length() > 0) {
 				return true;
 			}
@@ -538,53 +670,91 @@ public class YoutubeUtil {
 			log.error(e.getMessage(), e.getCause());
 		}
 		return false;
-		
+
 	}
-	
+
+	public static List<Playlist> getHotPlayList() {
+		List<Playlist> playlists = new ArrayList<Playlist>();
+		try {
+			String pageToken = null;
+			do {
+				URL url = getSearchUrl(pageToken);
+				JSONObject json = callYoutube(url);
+				if (json != null) {
+					pageToken = json.get("nextPageToken").toString();
+					JSONArray jsonArray = (JSONArray)json.get("items");
+					if (jsonArray != null) {
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject item = new JSONObject(jsonArray.get(i).toString());
+							item = new JSONObject(item.get("id").toString());
+							String playlistId = item.getString("playlistId");
+							Playlist playlist = getPlayList(playlistId);
+							if (playlist != null) {
+								int viewCount = getPlayListView(playlistId);
+								
+								if (viewCount < Constant.MAX_PLAYLIST_VIEW) {
+									return playlists;
+								} else {
+									playlist.setViewCount(viewCount);
+									playlists.add(playlist);
+								}
+							}
+						}
+					}
+				}
+			} while (pageToken != null);
+		} catch (JSONException e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return playlists;
+	}
+
 	/**
 	 * The main method.
-	 *
-	 * @param args the arguments
+	 * 
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		
-//		Properties properties = getConfig();
-//		System.out.println(properties.getProperty("tube.analyse.days"));
-		
-//		try {
-//			SimpleDateFormat format = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
-//			Date date = format.parse("2015-05-23T23:01:32.000Z");
-//			System.out.println(date.toString());
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		Tube tube = getTube("DQkrfti22mo");
-//		System.out.println(tube.toString());
-//		List<Tube> tubes =  getHotTube();
-//		System.out.println(tubes.size());
-//		for (Tube tube : tubes) {
-//			System.out.println(tube.toString());
-//		}
-		
-		//sendTube("21jVawyO0m8");
-		
-//		try {
-//			sendTube("oOyGODrV6aU");
-//		} catch (CommonException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
+
+		// Properties properties = getConfig();
+		// System.out.println(properties.getProperty("tube.analyse.days"));
+
+		// try {
+		// SimpleDateFormat format = new
+		// SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+		// Date date = format.parse("2015-05-23T23:01:32.000Z");
+		// System.out.println(date.toString());
+		// } catch (ParseException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+		// Tube tube = getTube("DQkrfti22mo");
+		// System.out.println(tube.toString());
+		// List<Tube> tubes = getHotTube();
+		// System.out.println(tubes.size());
+		// for (Tube tube : tubes) {
+		// System.out.println(tube.toString());
+		// }
+
+		// sendTube("21jVawyO0m8");
+
+		// try {
+		// sendTube("oOyGODrV6aU");
+		// } catch (CommonException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		try {
-			//sendTube("U_eGg7mGJys", String.valueOf(3.7f));
+			// sendTube("U_eGg7mGJys", String.valueOf(3.7f));
 			System.out.println(isValid("h8RSgh-aFH4"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }

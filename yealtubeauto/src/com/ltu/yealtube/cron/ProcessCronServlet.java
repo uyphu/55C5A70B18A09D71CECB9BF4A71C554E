@@ -32,26 +32,8 @@ public class ProcessCronServlet extends HttpServlet {
 		ReportService reportService = ReportService.getInstance();
 		try {
 			logger.info("Statistics Cron Job has been executed");
-
-			TubeService tubeService = TubeService.getInstance();
 			
-			String cursor = null;
-
-			do {
-				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.IN_WORK_STATUS, cursor, Constant.MAX_RECORDS);
-				if (tubes != null && tubes.getItems().size() > 0) {
-					for (Tube tube : tubes.getItems()) {
-						logger.info("Processint tube: " + tube.getId());
-						if (validateStatistics(tube)) {
-							reportService.addReport(Constant.IN_WORK_STATUS);
-						}
-					}
-					cursor = tubes.getNextPageToken();
-				} else {
-					cursor = null;
-				}
-
-			} while (cursor != null);
+			
 
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {
@@ -91,8 +73,11 @@ public class ProcessCronServlet extends HttpServlet {
 			int favoriteCount = list.get(0).getFavoriteCount();
 			int commentCount = list.get(0).getCommentCount();
 			int ratingValue = AppUtils.getParmValue("RATING_PARAM") != 0 ? AppUtils.getParmValue("RATING_PARAM") : Constant.RATING_PARAM;
+			//logger.debug("ratingValue: " + ratingValue);
 			float percent = ratingValue / list.size();
-			float rating = 0;
+			percent = 0.05f;
+			float rating = 0.0f;
+			int totalLike = 0;
 
 			for (int i = 1; i < list.size(); i++) {
 				Statistics item = list.get(i);
@@ -101,26 +86,38 @@ public class ProcessCronServlet extends HttpServlet {
 				totalView -= (item.getDislikeCount() - dislikeCount) * 7;
 				totalView += (item.getFavoriteCount() - favoriteCount) * 4;
 				totalView += (item.getCommentCount() - commentCount) * 3;
-
+				
+				totalLike += (item.getLikeCount() - likeCount) * 7;
+				totalLike -= (item.getDislikeCount() - dislikeCount) * 7;
+				totalLike += (item.getFavoriteCount() - favoriteCount) * 4;
+				totalLike += (item.getLikeCount() - likeCount) * 4;
+				totalLike += (item.getCommentCount() - commentCount) * 3;
+				//logger.debug("totalLike: " + i + " : " + totalLike);
+				
 				viewCount = item.getViewCount();
 				likeCount = item.getLikeCount();
 				dislikeCount = item.getDislikeCount();
 				favoriteCount = item.getFavoriteCount();
 				commentCount = item.getCommentCount();
 
-				float r = totalView
-						/ (viewCount + likeCount * 4 - dislikeCount * 7 + favoriteCount * 4 + commentCount * 3);
-				rating += r > percent ? percent : r;
 			}
+			
+			float r = (float)totalLike*2 / totalView;
+			//logger.debug("totalLike: " + totalLike + "totalView: " + totalView);
+			rating += r > percent ? percent : r;
+			//logger.debug("Everage: " + r);
+			rating = Math.round(rating*10000)/100.0f;
+			//logger.debug("rating: " + rating);
 
 			int average = totalView / list.size();
 			try {
-				tube.setRating(Math.round(rating*100)/100.0f);
+				tube.setRating(Math.round(rating*10000)/100.0f);
 				tube.setAverageView(average);
 				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE") : Constant.MAX_AVERAGE;
 				if (average > maxAverageValue) {
 					tube.setStatus(Constant.APPROVED_STATUS);
 					tubeService.update(tube);
+					//logger.debug("Everage: " + maxAverageValue);
 					return true;
 				} else {
 					tube.setStatus(Constant.CANCELLED_STATUS);
@@ -128,11 +125,11 @@ public class ProcessCronServlet extends HttpServlet {
 					reportService.addReport(Constant.UNSENT_STATUS);
 					return false;
 				}
-			} catch (CommonException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e.getCause());
 			}
 		}
-
+		logger.debug("End");
 		return false;
 	}
 

@@ -103,6 +103,9 @@ public class Constant {
 	/** The Constant MAX_VIEW. */
 	public static final int MAX_VIEW = 3100000;
 	
+	/** The Constant MAX_PLAYLIST_VIEW. */
+	public static final int MAX_PLAYLIST_VIEW = 1500000;
+	
 	/** The Constant MAX_RECORDS. */
 	public static final int MAX_RECORDS = 10;
 	
