@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -32,7 +32,9 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
-// TODO: Auto-generated Javadoc
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 /**
  * The Class YoutubeUtil.
  * 
@@ -79,13 +81,9 @@ public class YoutubeUtil {
 			conn.disconnect();
 
 			return json;
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
-		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
-		}
+		} 
 		return null;
 	}
 
@@ -116,13 +114,9 @@ public class YoutubeUtil {
 			conn.disconnect();
 
 			return json;
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
-		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
-		}
+		} 
 		return null;
 	}
 
@@ -238,6 +232,12 @@ public class YoutubeUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the play list.
+	 *
+	 * @param id the id
+	 * @return the play list
+	 */
 	public static Playlist getPlayList(String id) {
 		try {
 			Playlist tube = new Playlist();
@@ -259,40 +259,79 @@ public class YoutubeUtil {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
-
 		return null;
 	}
 
-	public static int getPlayListView(String id) {
+	/**
+	 * Gets the play list everage view.
+	 *
+	 * @param id the id
+	 * @return the play list everage view
+	 */
+	public static int getPlayListEverageView(String id) {
 		try {
 			String pageToken = null;
 			String urlString = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + id + "&key="
-					+ Constant.API_KEY;
+					+ Constant.API_KEY + "&maxResults=30";
 			int viewCount = 0;
+			int count = 0;
 			do {
 				if (pageToken != null) {
 					urlString = urlString + "&pageToken=" + pageToken;
 				}
 				JSONObject json = callYoutube(new URL(urlString));
 				if (json != null) {
-					pageToken = json.getString("nextPageToken");
+					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
 					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
-						JSONObject item = new JSONObject(jsonArray.get(0).toString());
-						item = new JSONObject(item.getString("snippet"));
-						item = new JSONObject(item.getString("resourceId"));
-						String videoId = item.getString("videoId");
-						Tube tube = getTube(videoId);
-						viewCount += tube.getViewCount();
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject item = new JSONObject(jsonArray.get(i).toString());
+							item = new JSONObject(item.getString("snippet"));
+							item = new JSONObject(item.getString("resourceId"));
+							String videoId = item.getString("videoId");
+							if (isValid(videoId)) {
+								Statistics statistics = getStatistics(videoId);
+								viewCount += statistics.getViewCount();
+								count++;
+							} 
+						}
 					}
 				}
-			} while (pageToken == null);
-			return viewCount;
+
+			} while (pageToken != null);
+			return viewCount / count;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
+			e.printStackTrace();
 		}
 
 		return 0;
+		
+	}
+	
+	/**
+	 * Gets the play list view.
+	 *
+	 * @param id the id
+	 * @return the play list view
+	 */
+	public static Integer getPlayListView(String id) {
+		
+		try {
+			Document doc = Jsoup.connect("https://www.youtube.com/playlist?list="+id+"&gl=GB&hl=en-GB").get();
+			String text = doc.body().text();
+			int start = text.indexOf("videos");
+			if (start != -1 ) {
+				int end = text.indexOf("views", start + 6);
+				String viewStr = text.substring(start + 6, end);
+				viewStr  = viewStr.trim();
+				viewStr = viewStr.replace(",", "");
+				return Integer.parseInt(viewStr);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e.getCause());
+		}
+		return null;
 	}
 
 	/**
@@ -304,32 +343,22 @@ public class YoutubeUtil {
 	 */
 	public static Statistics getStatistics(String id) {
 		try {
-			Tube tube = new Tube();
 			JSONObject json = getVideo(id, "statistics");
 			if (json != null) {
 				JSONArray jsonArray = (JSONArray) json.get("items");
 				if (jsonArray != null && jsonArray.length() > 0) {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
 					item = new JSONObject(item.get("statistics").toString());
-					tube.setId(id);
 					Statistics statistics = new Statistics();
 					statistics.setVideo(Key.create(Tube.class, id));
-					statistics.setViewCount(Integer.parseInt(item.get("viewCount") != null ? item.get("viewCount").toString()
-							: "0"));
-					statistics.setLikeCount(Integer.parseInt(item.get("likeCount") != null ? item.get("likeCount").toString()
-							: "0"));
-					statistics.setDislikeCount(Integer.parseInt(item.get("dislikeCount") != null ? item.get("dislikeCount")
-							.toString() : "0"));
-					statistics.setFavoriteCount(Integer.parseInt(item.get("favoriteCount") != null ? item.get("favoriteCount")
-							.toString() : "0"));
-					statistics.setCommentCount(Integer.parseInt(item.get("commentCount") != null ? item.get("commentCount")
-							.toString() : "0"));
-					// statistics.setRating(Float.parseFloat(item.get("rating")
-					// != null ? item.get("rating").toString() : "0"));
+					statistics.setViewCount(Integer.parseInt(item.has("viewCount") ? item.getString("viewCount") : "0"));
+					statistics.setLikeCount(Integer.parseInt(item.has("likeCount") ? item.getString("likeCount") : "0"));
+					statistics.setDislikeCount(Integer.parseInt(item.has("dislikeCount") ? item.getString("dislikeCount") : "0"));
+					statistics.setFavoriteCount(Integer.parseInt(item.has("favoriteCount") ? item.getString("favoriteCount") : "0"));
+					statistics.setCommentCount(Integer.parseInt(item.has("commentCount") ? item.getString("commentCount") : "0"));
 					return statistics;
 				}
 			}
-
 		} catch (Exception e) {
 			log.error(e.getMessage(), e.getCause());
 		}
@@ -363,6 +392,12 @@ public class YoutubeUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the playlist url.
+	 *
+	 * @param pageToken the page token
+	 * @return the playlist url
+	 */
 	private static URL getPlaylistUrl(String pageToken) {
 		try {
 			Calendar calendar = Calendar.getInstance();
@@ -442,7 +477,7 @@ public class YoutubeUtil {
 				URL url = getSearchUrl(pageToken);
 				JSONObject json = callYoutube(url);
 				if (json != null) {
-					pageToken = json.get("nextPageToken").toString();
+					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
 					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
 						for (int i = 0; i < jsonArray.length(); i++) {
@@ -469,7 +504,6 @@ public class YoutubeUtil {
 						}
 					}
 				}
-				System.out.println(count);
 				count++;
 			} while (count <= 5);
 		} catch (JSONException e) {
@@ -495,7 +529,7 @@ public class YoutubeUtil {
 				url = getCommentThreadUrl("snippet", videoId, pageToken);
 				json = callYoutube(url);
 				if (json != null) {
-					pageToken = json.get("nextPageToken").toString();
+					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
 					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
 						for (int i = 0; i < jsonArray.length(); i++) {
@@ -626,7 +660,6 @@ public class YoutubeUtil {
 			}
 		}
 		String body = bodyBuilder.toString();
-		// Log.v(TAG, "Posting '" + body + "' to " + url);
 		byte[] bytes = body.getBytes();
 		HttpURLConnection conn = null;
 		try {
@@ -658,6 +691,12 @@ public class YoutubeUtil {
 		}
 	}
 
+	/**
+	 * Checks if is valid.
+	 *
+	 * @param id the id
+	 * @return true, if is valid
+	 */
 	public static boolean isValid(String id) {
 		try {
 			String urlString = "https://www.googleapis.com/youtube/v3/videos?part=id&id=" + id + "&key=" + Constant.API_KEY;
@@ -673,16 +712,21 @@ public class YoutubeUtil {
 
 	}
 
+	/**
+	 * Gets the hot play list.
+	 * 
+	 * @return the hot play list
+	 */
 	public static List<Playlist> getHotPlayList() {
 		List<Playlist> playlists = new ArrayList<Playlist>();
 		try {
 			String pageToken = null;
 			do {
-				URL url = getSearchUrl(pageToken);
+				URL url = getPlaylistUrl(pageToken);
 				JSONObject json = callYoutube(url);
 				if (json != null) {
-					pageToken = json.get("nextPageToken").toString();
-					JSONArray jsonArray = (JSONArray)json.get("items");
+					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
+					JSONArray jsonArray = (JSONArray) json.get("items");
 					if (jsonArray != null) {
 						for (int i = 0; i < jsonArray.length(); i++) {
 							JSONObject item = new JSONObject(jsonArray.get(i).toString());
@@ -690,14 +734,17 @@ public class YoutubeUtil {
 							String playlistId = item.getString("playlistId");
 							Playlist playlist = getPlayList(playlistId);
 							if (playlist != null) {
-								int viewCount = getPlayListView(playlistId);
-								
-								if (viewCount < Constant.MAX_PLAYLIST_VIEW) {
-									return playlists;
-								} else {
-									playlist.setViewCount(viewCount);
-									playlists.add(playlist);
+								Integer viewCount = getPlayListView(playlistId);
+								//System.out.println("playlist:" + playlistId + ", view count: "+viewCount);
+								if (viewCount != null) {
+									if (viewCount < Constant.MAX_PLAYLIST_VIEW) {
+										return playlists;
+									} else {
+										playlist.setViewCount(viewCount);
+										playlists.add(playlist);
+									}
 								}
+								
 							}
 						}
 					}
@@ -708,7 +755,7 @@ public class YoutubeUtil {
 		}
 		return playlists;
 	}
-
+	
 	/**
 	 * The main method.
 	 * 
@@ -749,7 +796,11 @@ public class YoutubeUtil {
 
 		try {
 			// sendTube("U_eGg7mGJys", String.valueOf(3.7f));
-			System.out.println(isValid("h8RSgh-aFH4"));
+			// System.out.println(isValid("h8RSgh-aFH4"));
+//			List<Playlist> list = getHotPlayList();
+//			for (Playlist playlist : list) {
+//				System.out.println(playlist.toString());
+//			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
