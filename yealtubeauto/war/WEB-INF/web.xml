@@ -38,6 +38,16 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>PlaylistServlet</servlet-name>
+		<servlet-class>com.ltu.yealtube.cron.PlaylistServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PlaylistServlet</servlet-name>
+		<url-pattern>/cron/playlistcron</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>ApproveCronServlet</servlet-name>
 		<servlet-class>com.ltu.yealtube.cron.ApproveCronServlet</servlet-class>
 	</servlet>

@@ -25,4 +25,9 @@
 		<description>Automatically approve</description>
 		<schedule>every 2 hours</schedule>
 	</cron>
+	<cron>
+		<url>/cron/playlistcron</url>
+		<description>Automatically getting playlist</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
 </cronentries>

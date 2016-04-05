@@ -87,6 +87,13 @@ public class YoutubeUtil {
 		return null;
 	}
 
+	/**
+	 * Gets the playlist.
+	 *
+	 * @param id the id
+	 * @param part the part
+	 * @return the playlist
+	 */
 	public static JSONObject getPlaylist(String id, String part) {
 		try {
 
@@ -628,6 +635,22 @@ public class YoutubeUtil {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", videoId);
 		params.put("rating", rating);
+		post(endpoint, params);
+		return true;
+	}
+	
+	/**
+	 * Send playlist.
+	 *
+	 * @param playlistId the playlist id
+	 * @return true, if successful
+	 * @throws CommonException the common exception
+	 */
+	public static boolean sendPlaylist(Playlist playlist) throws CommonException {
+		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertPlaylist";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", playlist.getId());
+		params.put("viewCount", String.valueOf(playlist.getViewCount()));
 		post(endpoint, params);
 		return true;
 	}
