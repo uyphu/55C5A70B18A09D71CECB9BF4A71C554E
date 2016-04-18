@@ -789,7 +789,6 @@ public class YoutubeUtil {
 
 		// Properties properties = getConfig();
 		// System.out.println(properties.getProperty("tube.analyse.days"));
-
 		// try {
 		// SimpleDateFormat format = new
 		// SimpleDateFormat(Constant.LONG_DATE_FORMAT);
