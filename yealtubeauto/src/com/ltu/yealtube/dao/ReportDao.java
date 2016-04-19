@@ -17,14 +17,28 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 public class ReportDao extends AbstractDao<Report> {
 	
 	/** The instance. */
-	private static ReportDao instance = null;
-
-	/**
-	 * Instantiates a new report dao.
-	 */
-	public ReportDao() {
-		super(Report.class);
-	}
+	private static ReportDao instance;
+    
+    /**
+     * Instantiates a new statistics dao.
+     */
+    private ReportDao(){
+    	super(Report.class);
+    }
+     
+    /**
+     * Gets the single instance of ReportDao.
+     *
+     * @return single instance of ReportDao
+     */
+    public static ReportDao getInstance(){
+        if(instance == null){
+        	synchronized (ReportDao.class) {
+        		instance = new ReportDao();
+			}
+        }
+        return instance;
+    }
 
 	@Override
 	public void initData() {
@@ -36,18 +50,6 @@ public class ReportDao extends AbstractDao<Report> {
 	public void cleanData() {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	/**
-	 * Gets the single instance of ReportDao.
-	 *
-	 * @return single instance of ReportDao
-	 */
-	public static ReportDao getInstance() {
-		if (instance == null) {
-			instance = new ReportDao();
-		}
-		return instance;
 	}
 	
 	/**

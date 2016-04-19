@@ -12,10 +12,21 @@ import org.json.JSONObject;
 
 import com.ltu.yealtube.constants.Constant;
 
-public class APIUtils {
+/**
+ * The Class APIUtils.
+ * @author uyphu
+ */
+public final class APIUtils {
 	
-	/** The Constant log. */
-	private static final Logger log = Logger.getLogger(APIUtils.class);
+	/** The Constant LOG. */
+	private static final Logger LOG = Logger.getLogger(APIUtils.class);
+	
+	/**
+	 * Instantiates a new API utils.
+	 */
+	private APIUtils() {
+		
+	}
 	
 	/**
 	 * Gets the.
@@ -23,7 +34,7 @@ public class APIUtils {
 	 * @param url the url
 	 * @return the JSON object
 	 */
-	public static JSONObject get(URL url) {
+	public static JSONObject get(final URL url) {
 		try {
 
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -31,7 +42,7 @@ public class APIUtils {
 			conn.setRequestProperty("Accept", "application/json");
 
 			if (conn.getResponseCode() != 200) {
-				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				LOG.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 			
@@ -42,16 +53,14 @@ public class APIUtils {
 			while ((output = br.readLine()) != null) {
 				builder.append(output);
 			}
-
-			JSONObject json = new JSONObject(builder.toString());
-
 			conn.disconnect();
 			
-			return json;
-		}  catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
+			return new JSONObject(builder.toString());
+			
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}

@@ -14,32 +14,41 @@ import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 import com.ltu.yealtube.utils.AppUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ReportService.
  * @author uyphu
  */
-public class ReportService {
+public final class ReportService {
 	
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(TubeService.class);
+	private static final Logger LOGGER = Logger.getLogger(TubeService.class);
 
-	/** The instance. */
-	private static ReportService instance = null;
-	
 	/** The report dao. */
 	private static ReportDao reportDao = ReportDao.getInstance();
 	
-	/**
-	 * Gets the single instance of ReportService.
-	 *
-	 * @return single instance of ReportService
-	 */
-	public static ReportService getInstance() {
-		if (instance == null) {
-			instance = new ReportService();
-		}
-		return instance;
-	}
+	/** The instance. */
+	private static ReportService instance;
+    
+    /**
+     * Instantiates a new report service.
+     */
+    private ReportService(){}
+     
+    /**
+     * Gets the single instance of ReportService.
+     *
+     * @return single instance of ReportService
+     */
+    public static ReportService getInstance(){
+        if(instance == null){
+        	synchronized (ReportService.class) {
+        		instance = new ReportService();
+    		}
+            
+        }
+        return instance;
+    }
 	
 	/**
 	 * List.
@@ -71,6 +80,7 @@ public class ReportService {
 	 *
 	 * @param report the report
 	 * @return the report
+	 * @throws CommonException the common exception
 	 */
 	public Report insert(Report report) throws CommonException {
 		if (report != null && report.getId() == null) {
@@ -89,6 +99,7 @@ public class ReportService {
 	 *
 	 * @param report the report
 	 * @return the report
+	 * @throws CommonException the common exception
 	 */
 	public Report update(Report report) throws CommonException {
 		if (report != null && report.getId() != null) {
@@ -135,6 +146,7 @@ public class ReportService {
 	 * Delete.
 	 *
 	 * @param report the report
+	 * @throws CommonException the common exception
 	 */
 	public void delete(Report report) throws CommonException {
 		if (report != null && report.getId() != null) {
@@ -233,7 +245,7 @@ public class ReportService {
 				break;
 			}
 		} catch (CommonException e) {
-			logger.error(e.getMessage(), e.getCause());
+			LOGGER.error(e.getMessage(), e.getCause());
 		}
 	}
 

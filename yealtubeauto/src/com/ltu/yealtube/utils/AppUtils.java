@@ -13,11 +13,21 @@ import org.json.JSONObject;
 
 import com.ltu.yealtube.constants.Constant;
 
-public class AppUtils {
+/**
+ * The Class AppUtils.
+ * @author uyphu
+ */
+public final class AppUtils {
 	
-	/** The log. */
-	private static Logger log = Logger.getLogger(AppUtils.class);
+	/** The LOG. */
+	private static final Logger LOG = Logger.getLogger(AppUtils.class);
 
+	/**
+	 * Instantiates a new app utils.
+	 */
+	private AppUtils() {
+		
+	}
 	
 	/**
 	 * Gets the current time.
@@ -25,8 +35,8 @@ public class AppUtils {
 	 * @return the current time
 	 */
 	public static String getCurrentTime() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS Z");
-		return DATE_FORMAT.format(Calendar.getInstance().getTime());
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS Z");
+		return dateFormat.format(Calendar.getInstance().getTime());
 	}
 	
 	/**
@@ -45,11 +55,11 @@ public class AppUtils {
 	 * @return the date
 	 */
 	public static Date toDate(String date) {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
 		try {
-			return DATE_FORMAT.parse(date);
+			return dateFormat.parse(date);
 		} catch (ParseException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 			return null;
 		}
 	}
@@ -61,8 +71,8 @@ public class AppUtils {
 	 * @return the string
 	 */
 	public static String toString(Date date) {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
-		return DATE_FORMAT.format(date);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.LONG_DATE_FORMAT);
+		return dateFormat.format(date);
 	}
 	
 	/**
@@ -72,10 +82,16 @@ public class AppUtils {
 	 * @return the string
 	 */
 	public static String toShortDateString(Date date) {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(Constant.SHORT_DATE_FORMAT);
-		return DATE_FORMAT.format(date);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.SHORT_DATE_FORMAT);
+		return dateFormat.format(date);
 	}
 	
+	/**
+	 * Gets the parm value.
+	 *
+	 * @param id the id
+	 * @return the parm value
+	 */
 	public static int getParmValue(String id) {
 		if (id != null) {
 			String url = "https://yealtubetest.appspot.com/_ah/api/paramvalueendpoint/v1/paramvalue/" + id;
@@ -86,11 +102,11 @@ public class AppUtils {
 					return Integer.parseInt(jsonObject.getString("value"));
 				}
 			} catch (MalformedURLException e) {
-				log.error(e.getMessage(), e.getCause());
+				LOG.error(e.getMessage(), e.getCause());
 			} catch (NumberFormatException e) {
-				log.error(e.getMessage(), e.getCause());
+				LOG.error(e.getMessage(), e.getCause());
 			} catch (JSONException e) {
-				log.error(e.getMessage(), e.getCause());
+				LOG.error(e.getMessage(), e.getCause());
 			}
 		}
 		return 0;

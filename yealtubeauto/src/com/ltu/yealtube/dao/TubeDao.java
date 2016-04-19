@@ -19,14 +19,28 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 public class TubeDao extends AbstractDao<Tube> {
 	
 	/** The instance. */
-	private static TubeDao instance = null;
-
-	/**
-	 * Instantiates a new tube Tube dao.
-	 */
-	public TubeDao() {
-		super(Tube.class);
-	}
+	private static TubeDao instance;
+    
+    /**
+     * Instantiates a new tube dao.
+     */
+    private TubeDao(){
+    	super(Tube.class);
+    }
+     
+    /**
+     * Gets the single instance of TubeDao.
+     *
+     * @return single instance of TubeDao
+     */
+    public static TubeDao getInstance(){
+        if(instance == null){
+        	synchronized (TubeDao.class) {
+        		instance = new TubeDao();
+			}
+        }
+        return instance;
+    }
 
 	@Override
 	public void initData() {
@@ -67,51 +81,9 @@ public class TubeDao extends AbstractDao<Tube> {
 	}
 	
 	/**
-	 * Gets the single instance of TubeTubeDao.
-	 *
-	 * @return single instance of TubeTubeDao
-	 */
-	public static TubeDao getInstance() {
-		if (instance == null) {
-			instance = new TubeDao();
-		}
-		return instance;
-	}
-	
-	/**
-	 * Gets the query.
-	 * 
-	 * @param querySearch
-	 *            the query search
-	 * @return the query
-	 * @throws CommonException
-	 *             the proconco exception
-	 */
-//	public Query<Tube> getQuery(String querySearch) throws CommonException {
-//		try {
-//			if (querySearch != null) {
-//				Query<Tube> query;
-//				Map<String, Object> map = new HashMap<String, Object>();
-//				if (querySearch.indexOf("status:") != -1) {
-//					String[] queries = querySearch.split(":");
-//					map.put("status", Integer.parseInt(queries[1]));
-//					query = getQuery(map);
-//				} else {
-//					query = getQueryByName("title", querySearch);
-//				}
-//				return query;
-//			} else {
-//				return getQuery();
-//			}
-//		} catch (Exception e) {
-//			throw new CommonException(ErrorCode.SYSTEM_EXCEPTION.getId(), ErrorCodeDetail.ERROR_PARSE_QUERY
-//					+ Constant.STRING_EXEPTION_DETAIL + e.getMessage());
-//		}
-//	}
-	
-	/**
 	 * Gets the query over status.
 	 *
+	 * @param field the field
 	 * @param status the status
 	 * @return the query over status
 	 */
@@ -150,6 +122,7 @@ public class TubeDao extends AbstractDao<Tube> {
 	/**
 	 * Search tubes over status.
 	 *
+	 * @param field the field
 	 * @param status the status
 	 * @param cursorString the cursor string
 	 * @param count the count
@@ -164,7 +137,7 @@ public class TubeDao extends AbstractDao<Tube> {
 	/**
 	 * Gets the tube by name.
 	 *
-	 * @param name            the name
+	 * @param title the title
 	 * @param cursorString the cursor string
 	 * @param count the count
 	 * @return the tube by name
@@ -178,6 +151,9 @@ public class TubeDao extends AbstractDao<Tube> {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.ltu.yealtube.dao.AbstractDao#list(java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	public CollectionResponse<Tube> list(String cursorString, Integer count) {
 		Query<Tube> query = getQuery().order("-createdAt");
@@ -222,7 +198,7 @@ public class TubeDao extends AbstractDao<Tube> {
 			return null;
 		} catch (Exception e) {
 			throw new CommonException(ErrorCode.SYSTEM_EXCEPTION.getId(), ErrorCodeDetail.ERROR_PARSE_QUERY
-					+ Constant.STRING_EXEPTION_DETAIL + e.getMessage());
+					+ Constant.EXEPTION_DETAIL + e.getMessage());
 		}
 	}
 	

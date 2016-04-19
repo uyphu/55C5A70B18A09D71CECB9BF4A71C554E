@@ -13,6 +13,7 @@ import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class StatisticsDao.
  * @author uyphu
@@ -20,14 +21,28 @@ import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 public class StatisticsDao extends AbstractDao<Statistics> {
 	
 	/** The instance. */
-	private static StatisticsDao instance = null;
-
-	/**
-	 * Instantiates a new statistics dao.
-	 */
-	public StatisticsDao() {
-		super(Statistics.class);
-	}
+	private static StatisticsDao instance;
+    
+    /**
+     * Instantiates a new statistics dao.
+     */
+    private StatisticsDao(){
+    	super(Statistics.class);
+    }
+     
+    /**
+     * Gets the single instance of StatisticsDao.
+     *
+     * @return single instance of StatisticsDao
+     */
+    public static StatisticsDao getInstance(){
+        if(instance == null){
+        	synchronized (StatisticsDao.class) {
+        		instance = new StatisticsDao();
+			}
+        }
+        return instance;
+    }
 
 	@Override
 	public void initData() {
@@ -39,18 +54,6 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 	public void cleanData() {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	/**
-	 * Gets the single instance of StatisticsDao.
-	 *
-	 * @return single instance of StatisticsDao
-	 */
-	public static StatisticsDao getInstance() {
-		if (instance == null) {
-			instance = new StatisticsDao();
-		}
-		return instance;
 	}
 	
 	/**
@@ -117,12 +120,23 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 		return executeQuery(query, cursorString, count);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.ltu.yealtube.dao.AbstractDao#list(java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	public CollectionResponse<Statistics> list(String cursorString, Integer count) {
 		Query<Statistics> query = getQuery().order("createdAt");
 		return executeQuery(query, cursorString, count);
 	}
 	
+	/**
+	 * List by parent.
+	 *
+	 * @param parentId the parent id
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 */
 	public CollectionResponse<Statistics> listByParent(String parentId, String cursorString, Integer count) {
 		Query<Statistics> query = getQuery();
 		query = query.ancestor(Key.create(Tube.class, parentId));
@@ -130,6 +144,13 @@ public class StatisticsDao extends AbstractDao<Statistics> {
 		return executeQuery(query, cursorString, count);
 	}
 	
+	/**
+	 * List by parent.
+	 *
+	 * @param parentId the parent id
+	 * @param count the count
+	 * @return the list
+	 */
 	public List<Statistics> listByParent(String parentId, Integer count) {
 		Query<Statistics> query = getQuery();
 		query = query.ancestor(Key.create(Tube.class, parentId));

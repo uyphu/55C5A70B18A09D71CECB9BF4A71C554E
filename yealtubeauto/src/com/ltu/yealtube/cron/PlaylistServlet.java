@@ -12,28 +12,33 @@ import org.apache.log4j.Logger;
 
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.entity.Playlist;
+import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.utils.YoutubeUtil;
 
+/**
+ * The Class PlaylistServlet.
+ * @author uyphu
+ */
 @SuppressWarnings("serial")
 public class PlaylistServlet extends HttpServlet {
 
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(ProcessCronServlet.class);
+	private static final Logger LOGGER = Logger.getLogger(ProcessCronServlet.class);
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		ReportService reportService = ReportService.getInstance();
+		final ReportService reportService = ReportService.getInstance();
 		try {
-			logger.info("Playlist Cron Job has been executed");
+			LOGGER.info("Playlist Cron Job has been executed");
 			
-			List<Playlist> list = YoutubeUtil.getHotPlayList();
+			final List<Playlist> list = YoutubeUtil.getHotPlayList();
 			for (Playlist playlist : list) {
 				YoutubeUtil.sendPlaylist(playlist);
 			}
-			logger.info("End Cron Job.");
-		} catch (Exception ex) {
-			logger.error(ex.getMessage(), ex.getCause());
+			LOGGER.info("End Cron Job.");
+		} catch (CommonException ex) {
+			LOGGER.error(ex.getMessage(), ex.getCause());
 			reportService.addReport(Constant.EXCEPTION_STATUS);
 		}
 	}

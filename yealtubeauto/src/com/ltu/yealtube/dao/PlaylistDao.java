@@ -6,25 +6,39 @@ import java.util.Map;
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.googlecode.objectify.cmd.Query;
-import com.ltu.yealtube.entity.Report;
+import com.ltu.yealtube.entity.Playlist;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 
 /**
- * The Class ReportDao.
+ * The Class PlaylistDao.
  * @author uyphu
  */
-public class PlaylistDao extends AbstractDao<Report> {
+public class PlaylistDao extends AbstractDao<Playlist> {
 	
 	/** The instance. */
-	private static PlaylistDao instance = null;
-
-	/**
-	 * Instantiates a new report dao.
-	 */
-	public PlaylistDao() {
-		super(Report.class);
-	}
+	private static PlaylistDao instance;
+    
+    /**
+     * Instantiates a new statistics dao.
+     */
+    private PlaylistDao(){
+    	super(Playlist.class);
+    }
+     
+    /**
+     * Gets the single instance of PlaylistDao.
+     *
+     * @return single instance of PlaylistDao
+     */
+    public static PlaylistDao getInstance(){
+        if(instance == null){
+        	synchronized (PlaylistDao.class) {
+        		instance = new PlaylistDao();
+			}
+        }
+        return instance;
+    }
 
 	@Override
 	public void initData() {
@@ -39,18 +53,6 @@ public class PlaylistDao extends AbstractDao<Report> {
 	}
 	
 	/**
-	 * Gets the single instance of ReportDao.
-	 *
-	 * @return single instance of ReportDao
-	 */
-	public static PlaylistDao getInstance() {
-		if (instance == null) {
-			instance = new PlaylistDao();
-		}
-		return instance;
-	}
-	
-	/**
 	 * Gets the query.
 	 * 
 	 * @param querySearch
@@ -59,10 +61,10 @@ public class PlaylistDao extends AbstractDao<Report> {
 	 * @throws CommonException
 	 *             the proconco exception
 	 */
-	public Query<Report> getQuery(String querySearch) throws CommonException {
+	public Query<Playlist> getQuery(String querySearch) throws CommonException {
 		try {
 			if (querySearch != null) {
-				Query<Report> query;
+				Query<Playlist> query;
 				Map<String, Object> map = new HashMap<String, Object>();
 				if (querySearch.indexOf("date:") != -1) {
 					String[] queries = querySearch.split(":");
@@ -73,7 +75,7 @@ public class PlaylistDao extends AbstractDao<Report> {
 				}
 				return query;
 			} else {
-				return ofy().load().type(Report.class);
+				return ofy().load().type(Playlist.class);
 			}
 		} catch (Exception e) {
 			throw new CommonException(HttpStatusCodes.STATUS_CODE_SERVER_ERROR, ErrorCodeDetail.ERROR_QUERY_NOT_VALID.getMsg());
@@ -90,15 +92,15 @@ public class PlaylistDao extends AbstractDao<Report> {
 	 * @return the collection response
 	 * @throws CommonException the common exception
 	 */
-	public CollectionResponse<Report> searchReports(String querySearch, String cursorString, Integer count)
+	public CollectionResponse<Playlist> searchPlaylists(String querySearch, String cursorString, Integer count)
 			throws CommonException {
-		Query<Report> query = getQuery(querySearch);
+		Query<Playlist> query = getQuery(querySearch);
 		return executeQuery(query, cursorString, count);
 	}
 
 	@Override
-	public CollectionResponse<Report> list(String cursorString, Integer count) {
-		Query<Report> query = getQuery();
+	public CollectionResponse<Playlist> list(String cursorString, Integer count) {
+		Query<Playlist> query = getQuery();
 		return executeQuery(query, cursorString, count);
 	}
 

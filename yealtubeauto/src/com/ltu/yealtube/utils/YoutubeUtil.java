@@ -40,10 +40,10 @@ import org.jsoup.nodes.Document;
  * 
  * @author uyphu
  */
-public class YoutubeUtil {
+public final class YoutubeUtil {
 
-	/** The Constant log. */
-	private static final Logger log = Logger.getLogger(YoutubeUtil.class);
+	/** The Constant LOG. */
+	private static final Logger LOG = Logger.getLogger(YoutubeUtil.class);
 
 	/**
 	 * Gets the video.
@@ -64,7 +64,7 @@ public class YoutubeUtil {
 			conn.setRequestProperty("Accept", "application/json");
 
 			if (conn.getResponseCode() != 200) {
-				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				LOG.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
@@ -82,7 +82,7 @@ public class YoutubeUtil {
 
 			return json;
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		} 
 		return null;
 	}
@@ -104,7 +104,7 @@ public class YoutubeUtil {
 			conn.setRequestProperty("Accept", "application/json");
 
 			if (conn.getResponseCode() != 200) {
-				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				LOG.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
@@ -122,7 +122,7 @@ public class YoutubeUtil {
 
 			return json;
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		} 
 		return null;
 	}
@@ -142,7 +142,7 @@ public class YoutubeUtil {
 			conn.setRequestProperty("Accept", "application/json");
 
 			if (conn.getResponseCode() != 200) {
-				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				LOG.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
@@ -160,9 +160,9 @@ public class YoutubeUtil {
 
 			return json;
 		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -182,7 +182,7 @@ public class YoutubeUtil {
 			conn.setRequestProperty("Accept", "application/json");
 
 			if (conn.getResponseCode() != 200) {
-				log.error("Failed : HTTP error code : " + conn.getResponseCode());
+				LOG.error("Failed : HTTP error code : " + conn.getResponseCode());
 				throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
 			}
 
@@ -200,9 +200,9 @@ public class YoutubeUtil {
 
 			return json;
 		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -233,7 +233,7 @@ public class YoutubeUtil {
 			}
 
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 
 		return null;
@@ -264,7 +264,7 @@ public class YoutubeUtil {
 			}
 
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -308,7 +308,7 @@ public class YoutubeUtil {
 			} while (pageToken != null);
 			return viewCount / count;
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 			e.printStackTrace();
 		}
 
@@ -336,7 +336,7 @@ public class YoutubeUtil {
 				return Integer.parseInt(viewStr);
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -367,7 +367,7 @@ public class YoutubeUtil {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -394,7 +394,7 @@ public class YoutubeUtil {
 			}
 			return new URL(url);
 		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -420,7 +420,7 @@ public class YoutubeUtil {
 			}
 			return new URL(url);
 		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -440,7 +440,7 @@ public class YoutubeUtil {
 					+ Constant.API_KEY);
 			return url;
 		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -465,7 +465,7 @@ public class YoutubeUtil {
 			}
 			return new URL(url);
 		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -514,7 +514,7 @@ public class YoutubeUtil {
 				count++;
 			} while (count <= 5);
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return tubes;
 	}
@@ -553,7 +553,7 @@ public class YoutubeUtil {
 				count++;
 			} while (count < Constant.MAX_PAGE_COMMENT);
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return false;
 	}
@@ -577,9 +577,9 @@ public class YoutubeUtil {
 			item = new JSONObject(item.get("snippet").toString());
 			return item.getString("textDisplay");
 		} catch (MalformedURLException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 
 		return null;
@@ -618,7 +618,7 @@ public class YoutubeUtil {
 			props.load(is);
 			return props;
 		} catch (IOException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return null;
 	}
@@ -729,7 +729,7 @@ public class YoutubeUtil {
 				return true;
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return false;
 
@@ -774,7 +774,7 @@ public class YoutubeUtil {
 				}
 			} while (pageToken != null);
 		} catch (JSONException e) {
-			log.error(e.getMessage(), e.getCause());
+			LOG.error(e.getMessage(), e.getCause());
 		}
 		return playlists;
 	}

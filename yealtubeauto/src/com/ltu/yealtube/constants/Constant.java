@@ -5,7 +5,7 @@ package com.ltu.yealtube.constants;
  * The Class Constant.
  * @author uyphu
  */
-public class Constant {
+public final class Constant {
 
 	/** The Constant WEB_CLIENT_ID. */
 	public static final String WEB_CLIENT_ID = "967485763661-s62auqoraod5k5nhtkp62e8bl9krmcil.apps.googleusercontent.com";
@@ -26,7 +26,7 @@ public class Constant {
     public static final String STRING_ZERO = "0";
     
     /** The Constant STRING_EXEPTION_DETAIL. */
-    public static final String STRING_EXEPTION_DETAIL = "[EXEPTION_DETAIL]";
+    public static final String EXEPTION_DETAIL = "[EXEPTION_DETAIL]";
     
     /** The Constant ACTIVATED. */
     public static final boolean ACTIVATED = true;
@@ -64,7 +64,7 @@ public class Constant {
     
     //FIXME need to be configurable
     /** The Constant TOKEN_VALIDITY_IN_SECONDS. */
-    public static final int TOKEN_VALIDITY_IN_SECONDS = 1800000;
+    public static final int TOKEN_IN_SECONDS = 1800000;
     
     /** The Constant GOOGLE_USER. */
     public static final String GOOGLE_USER = "G";

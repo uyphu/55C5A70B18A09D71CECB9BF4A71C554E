@@ -21,7 +21,7 @@ import com.ltu.yealtube.utils.AppUtils;
 public class PlaylistService {
 	
 	/** The Constant logger. */
-	private static final Logger logger = Logger.getLogger(PlaylistService.class);
+	private static final Logger LOGGER = Logger.getLogger(PlaylistService.class);
 
 	/** The instance. */
 	private static PlaylistService instance = null;
@@ -233,7 +233,7 @@ public class PlaylistService {
 				break;
 			}
 		} catch (CommonException e) {
-			logger.error(e.getMessage(), e.getCause());
+			LOGGER.error(e.getMessage(), e.getCause());
 		}
 	}
 
