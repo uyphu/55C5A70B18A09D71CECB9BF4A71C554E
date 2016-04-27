@@ -398,6 +398,26 @@ public final class YoutubeUtil {
 		}
 		return null;
 	}
+	
+	private static URL getMovieUrl(String pageToken) {
+		try {
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_YEAR, -60);
+			SimpleDateFormat format = new SimpleDateFormat(Constant.DATE_FORMAT);
+			String after = format.format(calendar.getTime()) + "Z";
+			calendar.add(Calendar.DAY_OF_YEAR, 1);
+			String before = format.format(calendar.getTime()) + "Z";
+			String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&publishedAfter=" + after
+					+ "&publishedBefore=" + before + "&type=video&videoDefinition=high&videoDuration=long&videoEmbeddable=true&videoType=movie&key=" + Constant.API_KEY;
+			if (pageToken != null) {
+				url = url + "&pageToken=" + pageToken;
+			}
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			LOG.error(e.getMessage(), e.getCause());
+		}
+		return null;
+	}
 
 	/**
 	 * Gets the playlist url.
@@ -475,13 +495,19 @@ public final class YoutubeUtil {
 	 * 
 	 * @return the hot tube
 	 */
-	public static List<Tube> getHotTube() {
+	public static List<Tube> getHotTube(String type) {
 		List<Tube> tubes = new ArrayList<Tube>();
 		try {
 			String pageToken = null;
 			int count = 0;
+			URL url;
 			do {
-				URL url = getSearchUrl(pageToken);
+				if (Constant.MOVIE_TYPE.equals(type)) {
+					url = getMovieUrl(pageToken);
+				} else {
+					url = getSearchUrl(pageToken);
+				}
+				
 				JSONObject json = callYoutube(url);
 				if (json != null) {
 					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
@@ -502,6 +528,9 @@ public final class YoutubeUtil {
 											List<Statistics> list = new ArrayList<Statistics>();
 											list.add(statistics);
 											tube.setStatistics(list);
+											if (Constant.MOVIE_TYPE.equals(type)) {
+												tube.setVideoType(Constant.MOVIE_TYPE);
+											}
 											tubes.add(tube);
 										}
 
@@ -518,7 +547,7 @@ public final class YoutubeUtil {
 		}
 		return tubes;
 	}
-
+	
 	/**
 	 * Checks for good comment.
 	 * 

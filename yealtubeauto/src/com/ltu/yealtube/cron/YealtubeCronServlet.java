@@ -34,7 +34,7 @@ public class YealtubeCronServlet extends HttpServlet {
 		try {
 			logger.info("Cron Job has been executed");
 			
-			List<Tube> tubes = YoutubeUtil.getHotTube();
+			List<Tube> tubes = YoutubeUtil.getHotTube(null);
 			System.out.println(tubes.size());
 			TubeService service = TubeService.getInstance();
 			ReportService reportService = ReportService.getInstance();

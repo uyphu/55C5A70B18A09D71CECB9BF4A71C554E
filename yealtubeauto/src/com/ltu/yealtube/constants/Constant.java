@@ -130,4 +130,7 @@ public final class Constant {
 	/** The Constant RATING_PARAM. */
 	public static final int RATING_PARAM = 5;
 	
+	/** The Constant MOVIE_TYPE. */
+	public static final String MOVIE_TYPE = "M";
+	
 }

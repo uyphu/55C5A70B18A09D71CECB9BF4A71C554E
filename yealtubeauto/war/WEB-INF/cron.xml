@@ -6,6 +6,11 @@
 		<schedule>every day 00:00</schedule>
 	</cron>
 	<cron>
+		<url>/cron/movie</url>
+		<description>Automatically getting hot movies</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
 		<url>/cron/removecron</url>
 		<description>Automatically remove tube</description>
 		<schedule>every day 00:00</schedule>
