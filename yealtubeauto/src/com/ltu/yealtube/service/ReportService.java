@@ -45,7 +45,6 @@ public final class ReportService {
         	synchronized (ReportService.class) {
         		instance = new ReportService();
     		}
-            
         }
         return instance;
     }

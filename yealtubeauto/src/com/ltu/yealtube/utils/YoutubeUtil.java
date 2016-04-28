@@ -83,15 +83,17 @@ public final class YoutubeUtil {
 			return json;
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e.getCause());
-		} 
+		}
 		return null;
 	}
 
 	/**
 	 * Gets the playlist.
-	 *
-	 * @param id the id
-	 * @param part the part
+	 * 
+	 * @param id
+	 *            the id
+	 * @param part
+	 *            the part
 	 * @return the playlist
 	 */
 	public static JSONObject getPlaylist(String id, String part) {
@@ -123,7 +125,7 @@ public final class YoutubeUtil {
 			return json;
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e.getCause());
-		} 
+		}
 		return null;
 	}
 
@@ -241,8 +243,9 @@ public final class YoutubeUtil {
 
 	/**
 	 * Gets the play list.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return the play list
 	 */
 	public static Playlist getPlayList(String id) {
@@ -271,8 +274,9 @@ public final class YoutubeUtil {
 
 	/**
 	 * Gets the play list everage view.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return the play list everage view
 	 */
 	public static int getPlayListEverageView(String id) {
@@ -300,7 +304,7 @@ public final class YoutubeUtil {
 								Statistics statistics = getStatistics(videoId);
 								viewCount += statistics.getViewCount();
 								count++;
-							} 
+							}
 						}
 					}
 				}
@@ -313,25 +317,26 @@ public final class YoutubeUtil {
 		}
 
 		return 0;
-		
+
 	}
-	
+
 	/**
 	 * Gets the play list view.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return the play list view
 	 */
 	public static Integer getPlayListView(String id) {
-		
+
 		try {
-			Document doc = Jsoup.connect("https://www.youtube.com/playlist?list="+id+"&gl=GB&hl=en-GB").get();
+			Document doc = Jsoup.connect("https://www.youtube.com/playlist?list=" + id + "&gl=GB&hl=en-GB").get();
 			String text = doc.body().text();
 			int start = text.indexOf("videos");
-			if (start != -1 ) {
+			if (start != -1) {
 				int end = text.indexOf("views", start + 6);
 				String viewStr = text.substring(start + 6, end);
-				viewStr  = viewStr.trim();
+				viewStr = viewStr.trim();
 				viewStr = viewStr.replace(",", "");
 				return Integer.parseInt(viewStr);
 			}
@@ -360,9 +365,12 @@ public final class YoutubeUtil {
 					statistics.setVideo(Key.create(Tube.class, id));
 					statistics.setViewCount(Integer.parseInt(item.has("viewCount") ? item.getString("viewCount") : "0"));
 					statistics.setLikeCount(Integer.parseInt(item.has("likeCount") ? item.getString("likeCount") : "0"));
-					statistics.setDislikeCount(Integer.parseInt(item.has("dislikeCount") ? item.getString("dislikeCount") : "0"));
-					statistics.setFavoriteCount(Integer.parseInt(item.has("favoriteCount") ? item.getString("favoriteCount") : "0"));
-					statistics.setCommentCount(Integer.parseInt(item.has("commentCount") ? item.getString("commentCount") : "0"));
+					statistics
+							.setDislikeCount(Integer.parseInt(item.has("dislikeCount") ? item.getString("dislikeCount") : "0"));
+					statistics.setFavoriteCount(Integer.parseInt(item.has("favoriteCount") ? item.getString("favoriteCount")
+							: "0"));
+					statistics
+							.setCommentCount(Integer.parseInt(item.has("commentCount") ? item.getString("commentCount") : "0"));
 					return statistics;
 				}
 			}
@@ -398,7 +406,7 @@ public final class YoutubeUtil {
 		}
 		return null;
 	}
-	
+
 	private static URL getMovieUrl(String pageToken) {
 		try {
 			Calendar calendar = Calendar.getInstance();
@@ -408,7 +416,9 @@ public final class YoutubeUtil {
 			calendar.add(Calendar.DAY_OF_YEAR, 1);
 			String before = format.format(calendar.getTime()) + "Z";
 			String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&order=viewCount&publishedAfter=" + after
-					+ "&publishedBefore=" + before + "&type=video&videoDefinition=high&videoDuration=long&videoEmbeddable=true&videoType=movie&key=" + Constant.API_KEY;
+					+ "&publishedBefore=" + before
+					+ "&type=video&videoDefinition=high&videoDuration=long&videoEmbeddable=true&videoType=movie&key="
+					+ Constant.API_KEY;
 			if (pageToken != null) {
 				url = url + "&pageToken=" + pageToken;
 			}
@@ -421,8 +431,9 @@ public final class YoutubeUtil {
 
 	/**
 	 * Gets the playlist url.
-	 *
-	 * @param pageToken the page token
+	 * 
+	 * @param pageToken
+	 *            the page token
 	 * @return the playlist url
 	 */
 	private static URL getPlaylistUrl(String pageToken) {
@@ -507,7 +518,7 @@ public final class YoutubeUtil {
 				} else {
 					url = getSearchUrl(pageToken);
 				}
-				
+
 				JSONObject json = callYoutube(url);
 				if (json != null) {
 					pageToken = json.has("nextPageToken") ? json.getString("nextPageToken") : null;
@@ -547,7 +558,7 @@ public final class YoutubeUtil {
 		}
 		return tubes;
 	}
-	
+
 	/**
 	 * Checks for good comment.
 	 * 
@@ -660,23 +671,45 @@ public final class YoutubeUtil {
 	 * @return true, if successful
 	 */
 	public static boolean sendTube(String videoId, String rating) throws CommonException {
-		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertVideo";
+		String endpoint = Constant.ROOT_ENPOINT + "youtubeendpoint/v1/insertVideo";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", videoId);
 		params.put("rating", rating);
 		post(endpoint, params);
 		return true;
 	}
-	
+
+	/**
+	 * Send movie.
+	 * 
+	 * @param videoId
+	 *            the video id
+	 * @param rating
+	 *            the rating
+	 * @return true, if successful
+	 * @throws CommonException
+	 *             the common exception
+	 */
+	public static boolean sendMovie(String videoId, String rating) throws CommonException {
+		String endpoint = Constant.ROOT_ENPOINT + "youtubeendpoint/v1/insertMovie";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("id", videoId);
+		params.put("rating", rating);
+		post(endpoint, params);
+		return true;
+	}
+
 	/**
 	 * Send playlist.
-	 *
-	 * @param playlistId the playlist id
+	 * 
+	 * @param playlistId
+	 *            the playlist id
 	 * @return true, if successful
-	 * @throws CommonException the common exception
+	 * @throws CommonException
+	 *             the common exception
 	 */
 	public static boolean sendPlaylist(Playlist playlist) throws CommonException {
-		String endpoint = "https://yealtubetest.appspot.com/_ah/api/youtubeendpoint/v1/insertPlaylist";
+		String endpoint = Constant.ROOT_ENPOINT + "youtubeendpoint/v1/insertPlaylist";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("id", playlist.getId());
 		params.put("viewCount", String.valueOf(playlist.getViewCount()));
@@ -745,8 +778,9 @@ public final class YoutubeUtil {
 
 	/**
 	 * Checks if is valid.
-	 *
-	 * @param id the id
+	 * 
+	 * @param id
+	 *            the id
 	 * @return true, if is valid
 	 */
 	public static boolean isValid(String id) {
@@ -787,7 +821,8 @@ public final class YoutubeUtil {
 							Playlist playlist = getPlayList(playlistId);
 							if (playlist != null) {
 								Integer viewCount = getPlayListView(playlistId);
-								//System.out.println("playlist:" + playlistId + ", view count: "+viewCount);
+								// System.out.println("playlist:" + playlistId +
+								// ", view count: "+viewCount);
 								if (viewCount != null) {
 									if (viewCount < Constant.MAX_PLAYLIST_VIEW) {
 										return playlists;
@@ -796,7 +831,7 @@ public final class YoutubeUtil {
 										playlists.add(playlist);
 									}
 								}
-								
+
 							}
 						}
 					}
@@ -807,7 +842,7 @@ public final class YoutubeUtil {
 		}
 		return playlists;
 	}
-	
+
 	/**
 	 * The main method.
 	 * 
@@ -846,12 +881,12 @@ public final class YoutubeUtil {
 		// }
 
 		try {
-			// sendTube("U_eGg7mGJys", String.valueOf(3.7f));
-			// System.out.println(isValid("h8RSgh-aFH4"));
-//			List<Playlist> list = getHotPlayList();
-//			for (Playlist playlist : list) {
-//				System.out.println(playlist.toString());
-//			}
+			 //sendMovie("B1iitGqcFw4", String.valueOf(3.7f));
+			 //System.out.println(isValid("B1iitGqcFw4"));
+//			 List<Playlist> list = getHotPlayList();
+//			 for (Playlist playlist : list) {
+//			 System.out.println(playlist.toString());
+//			 }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

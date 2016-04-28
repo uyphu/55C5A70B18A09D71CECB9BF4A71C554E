@@ -133,4 +133,7 @@ public final class Constant {
 	/** The Constant MOVIE_TYPE. */
 	public static final String MOVIE_TYPE = "M";
 	
+	/** The Constant ROOT_ENPOINT. */
+	public static final String ROOT_ENPOINT = "https://yealtubetest.appspot.com/_ah/api/";
+	
 }

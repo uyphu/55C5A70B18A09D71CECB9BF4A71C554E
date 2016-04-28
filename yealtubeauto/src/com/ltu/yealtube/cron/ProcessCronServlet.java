@@ -32,13 +32,12 @@ public class ProcessCronServlet extends HttpServlet {
 		ReportService reportService = ReportService.getInstance();
 		try {
 			logger.info("Statistics Cron Job has been executed");
-
 			TubeService tubeService = TubeService.getInstance();
-			
 			String cursor = null;
 
 			do {
-				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.IN_WORK_STATUS, cursor, Constant.MAX_RECORDS);
+				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.IN_WORK_STATUS, cursor,
+						Constant.MAX_RECORDS);
 				if (tubes != null && tubes.getItems().size() > 0) {
 					for (Tube tube : tubes.getItems()) {
 						if (validateStatistics(tube)) {
@@ -89,34 +88,45 @@ public class ProcessCronServlet extends HttpServlet {
 			int dislikeCount = list.get(0).getDislikeCount();
 			int favoriteCount = list.get(0).getFavoriteCount();
 			int commentCount = list.get(0).getCommentCount();
-			int ratingValue = AppUtils.getParmValue("RATING_PARAM") != 0 ? AppUtils.getParmValue("RATING_PARAM") : Constant.RATING_PARAM;
+			int ratingValue = AppUtils.getParmValue("RATING_PARAM") != 0 ? AppUtils.getParmValue("RATING_PARAM")
+					: Constant.RATING_PARAM;
 			float percent = ratingValue / list.size();
 			float rating = 0;
 
 			for (int i = 1; i < list.size(); i++) {
 				Statistics item = list.get(i);
-				totalView += (item.getViewCount() - viewCount);
-				totalView += (item.getLikeCount() - likeCount) * 4;
-				totalView -= (item.getDislikeCount() - dislikeCount) * 7;
-				totalView += (item.getFavoriteCount() - favoriteCount) * 4;
-				totalView += (item.getCommentCount() - commentCount) * 3;
+				int totalViewPerTimes = 0;
+				int totalRating = 0;
+				totalViewPerTimes += (item.getViewCount() - viewCount);
+				totalViewPerTimes += (item.getLikeCount() - likeCount) * 4;
+				totalViewPerTimes -= (item.getDislikeCount() - dislikeCount) * 7;
+				totalViewPerTimes += (item.getFavoriteCount() - favoriteCount) * 4;
+				totalViewPerTimes += (item.getCommentCount() - commentCount) * 3;
+				totalRating += (item.getLikeCount() - likeCount) * 4;
+				totalRating -= (item.getDislikeCount() - dislikeCount) * 7;
+				totalRating += (item.getFavoriteCount() - favoriteCount) * 4;
+				totalRating += (item.getCommentCount() - commentCount) * 3;
+
+				totalView += totalViewPerTimes;
 
 				viewCount = item.getViewCount();
 				likeCount = item.getLikeCount();
 				dislikeCount = item.getDislikeCount();
 				favoriteCount = item.getFavoriteCount();
 				commentCount = item.getCommentCount();
+				if (totalViewPerTimes != 0) {
+					float r = (float) totalRating / totalViewPerTimes;
+					rating += r > percent ? percent : r;
+				}
 
-				float r = totalView
-						/ (viewCount + likeCount * 4 - dislikeCount * 7 + favoriteCount * 4 + commentCount * 3);
-				rating += r > percent ? percent : r;
 			}
 
 			int average = totalView / list.size();
 			try {
-				tube.setRating(Math.round(rating*100)/100.0f);
+				tube.setRating(Math.round(rating * 10000) / 100.0f);
 				tube.setAverageView(average);
-				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE") : Constant.MAX_AVERAGE;
+				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE")
+						: Constant.MAX_AVERAGE;
 				if (average > maxAverageValue) {
 					tube.setStatus(Constant.APPROVED_STATUS);
 					tubeService.update(tube);
