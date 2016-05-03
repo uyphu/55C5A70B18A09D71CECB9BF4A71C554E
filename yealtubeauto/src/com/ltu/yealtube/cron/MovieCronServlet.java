@@ -33,7 +33,8 @@ public class MovieCronServlet extends HttpServlet {
 		for (Tube tube : tubes) {
 			try {
 				logger.debug("Send tube: " + tube.getId() + " with rating: " + String.valueOf(tube.getRating()));
-				boolean flag = YoutubeUtil.sendMovie(tube.getId(), String.valueOf(tube.getRating()));
+				float rating = YoutubeUtil.calculateRating(tube.getId());
+				boolean flag = YoutubeUtil.sendMovie(tube.getId(), String.valueOf(rating));
 				if (!flag) {
 					reportService.addReport(Constant.UNSENT_STATUS);
 				} else {

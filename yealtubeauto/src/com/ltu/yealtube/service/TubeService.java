@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.googlecode.objectify.Key;
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.dao.StatisticsDao;
 import com.ltu.yealtube.dao.TubeDao;
@@ -265,6 +266,7 @@ public class TubeService {
 			if (tube != null) {
 				Statistics statistics = YoutubeUtil.getStatistics(youtubeId);
 				StatisticsService service = StatisticsService.getInstance();
+				statistics.setVideo(Key.create(Tube.class, youtubeId));
 				statistics = service.insert(statistics);
 				List<Statistics> list = new ArrayList<Statistics>();
 				list.add(statistics);

@@ -21,6 +21,7 @@ import com.ltu.yealtube.service.ReportService;
 import com.ltu.yealtube.service.StatisticsService;
 import com.ltu.yealtube.service.TubeService;
 import com.ltu.yealtube.utils.AppUtils;
+import com.ltu.yealtube.utils.YoutubeUtil;
 
 @SuppressWarnings("serial")
 public class ProcessCronServlet extends HttpServlet {
@@ -115,7 +116,7 @@ public class ProcessCronServlet extends HttpServlet {
 				favoriteCount = item.getFavoriteCount();
 				commentCount = item.getCommentCount();
 				if (totalViewPerTimes != 0) {
-					float r = (float) totalRating / totalViewPerTimes;
+					float r = (float) (totalRating * 100) / totalViewPerTimes;
 					rating += r > percent ? percent : r;
 				}
 
@@ -123,7 +124,11 @@ public class ProcessCronServlet extends HttpServlet {
 
 			int average = totalView / list.size();
 			try {
-				tube.setRating(Math.round(rating * 10000) / 100.0f);
+				rating = (float)rating / list.size();
+				tube.setRating(Math.round(rating * 100.0) / 100.0f);
+				if (tube.getRating() == 0) {
+					tube.setRating(YoutubeUtil.calculateRating(tube.getId()));
+				}
 				tube.setAverageView(average);
 				int maxAverageValue = AppUtils.getParmValue("MAX_AVERAGE") != 0 ? AppUtils.getParmValue("MAX_AVERAGE")
 						: Constant.MAX_AVERAGE;
@@ -144,7 +149,7 @@ public class ProcessCronServlet extends HttpServlet {
 
 		return false;
 	}
-
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);

@@ -22,18 +22,16 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import com.google.api.client.http.HttpStatusCodes;
-import com.googlecode.objectify.Key;
 import com.ltu.yealtube.constants.Constant;
 import com.ltu.yealtube.entity.Playlist;
 import com.ltu.yealtube.entity.Statistics;
 import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 /**
  * The Class YoutubeUtil.
@@ -362,7 +360,6 @@ public final class YoutubeUtil {
 					JSONObject item = new JSONObject(jsonArray.get(0).toString());
 					item = new JSONObject(item.get("statistics").toString());
 					Statistics statistics = new Statistics();
-					statistics.setVideo(Key.create(Tube.class, id));
 					statistics.setViewCount(Integer.parseInt(item.has("viewCount") ? item.getString("viewCount") : "0"));
 					statistics.setLikeCount(Integer.parseInt(item.has("likeCount") ? item.getString("likeCount") : "0"));
 					statistics
@@ -842,6 +839,28 @@ public final class YoutubeUtil {
 		}
 		return playlists;
 	}
+	
+	/**
+	 * Calculate rating.
+	 *
+	 * @param videoId the video id
+	 * @return the float
+	 */
+	public static float calculateRating(String videoId) {
+		int ratingValue = AppUtils.getParmValue("RATING_PARAM") != 0 ? AppUtils.getParmValue("RATING_PARAM")
+				: Constant.RATING_PARAM;
+		Statistics statistics  = YoutubeUtil.getStatistics(videoId);
+		int totalRating = 0;
+		totalRating += statistics.getLikeCount() * 4;
+		totalRating -= statistics.getDislikeCount() * 7;
+		totalRating += statistics.getFavoriteCount() * 4;
+		totalRating += statistics.getCommentCount() * 3;
+		
+		float rating = (float) (totalRating * 10000.0f) / statistics.getViewCount();
+		rating = Math.round(rating * 100.0) / 100.0f;
+		return rating > ratingValue ? ratingValue : rating;
+	}
+
 
 	/**
 	 * The main method.
@@ -882,6 +901,8 @@ public final class YoutubeUtil {
 
 		try {
 			 //sendMovie("B1iitGqcFw4", String.valueOf(3.7f));
+			//float rating = calculateRating("NU7J0dJcr_Q");
+			//System.out.println(rating);
 			 //System.out.println(isValid("B1iitGqcFw4"));
 //			 List<Playlist> list = getHotPlayList();
 //			 for (Playlist playlist : list) {
