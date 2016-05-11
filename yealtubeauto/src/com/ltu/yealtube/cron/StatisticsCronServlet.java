@@ -57,6 +57,11 @@ public class StatisticsCronServlet extends HttpServlet {
 							calendar.add(Calendar.DAY_OF_YEAR, Constant.MAX_DAYS);
 //							logger.debug("Tube: " + tube.getId() + " CreatedAt: " + AppUtils.toString(createdAt)
 //									+ " ModifiedAt: " + AppUtils.toString(modifiedAt));
+							//FIXME Phu needs to remove this condition
+							if (tube.getStatistics() == null || tube.getStatistics().size() < 1) {
+								tubeService.delete(tube);
+								continue;
+							}
 							if (modifiedAt.after(calendar.getTime())) {
 								//logger.debug("After: " + AppUtils.toString(modifiedAt));
 								tube.setStatus(Constant.IN_WORK_STATUS);
