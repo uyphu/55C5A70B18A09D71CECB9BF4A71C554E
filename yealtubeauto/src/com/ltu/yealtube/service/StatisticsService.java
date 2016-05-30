@@ -6,8 +6,10 @@ import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.googlecode.objectify.Key;
 import com.ltu.yealtube.dao.StatisticsDao;
 import com.ltu.yealtube.entity.Statistics;
+import com.ltu.yealtube.entity.Tube;
 import com.ltu.yealtube.exeptions.CommonException;
 import com.ltu.yealtube.exeptions.ErrorCodeDetail;
 import com.ltu.yealtube.utils.YoutubeUtil;
@@ -82,6 +84,7 @@ public class StatisticsService {
 	public Statistics insert(String videoId) throws CommonException {
 		if (videoId != null) {
 			Statistics statistics = YoutubeUtil.getStatistics(videoId);
+			statistics.setVideo(Key.create(Tube.class, videoId));
 			StatisticsService service = StatisticsService.getInstance();
 			statistics = service.insert(statistics);
 			return statistics;

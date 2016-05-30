@@ -41,7 +41,6 @@ public class StatisticsCronServlet extends HttpServlet {
 			TubeService tubeService = TubeService.getInstance();
 			StatisticsService statisticsService = StatisticsService.getInstance();
 			String cursor = null;
-
 			do {
 				CollectionResponse<Tube> tubes = tubeService.searchTubes("status = ", Constant.PENDING_STATUS, cursor,
 						Constant.MAX_RECORDS);
@@ -88,9 +87,8 @@ public class StatisticsCronServlet extends HttpServlet {
 				} else {
 					cursor = null;
 				}
-
+				
 			} while (cursor != null);
-
 			logger.info("End Cron Job.");
 		} catch (Exception ex) {
 			logger.error("Error: "+ ex.getMessage(), ex.getCause());

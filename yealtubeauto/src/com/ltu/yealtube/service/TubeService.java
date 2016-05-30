@@ -2,6 +2,7 @@ package com.ltu.yealtube.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.api.client.http.HttpStatusCodes;
@@ -335,6 +336,21 @@ public class TubeService {
 	public CollectionResponse<Tube> searchTubes(String field, int value, String cursorString, Integer count)
 			throws CommonException {
 		return tubeDao.searchTubes(field, value, cursorString, count);
+	}
+	
+	/**
+	 * Search tubes.
+	 *
+	 * @param createdAt the created at
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	public CollectionResponse<Tube> searchTubes(Date createdAt, int status, String cursorString, Integer count)
+			throws CommonException {
+		return tubeDao.searchTubes(createdAt, status, cursorString, count);
 	}
 
 }

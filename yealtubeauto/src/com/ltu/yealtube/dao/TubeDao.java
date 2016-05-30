@@ -1,5 +1,6 @@
 package com.ltu.yealtube.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +134,25 @@ public class TubeDao extends AbstractDao<Tube> {
 			throws CommonException {
 		return search(field, status, cursorString, count);
 	}
-
+	
+	/**
+	 * List.
+	 *
+	 * @param createdAt the created at
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	public CollectionResponse<Tube> searchTubes(Date createdAt, int status, String cursorString, Integer count)
+			throws CommonException {
+		Map<String, Object> query = new HashMap<String, Object>();
+		query.put("createdAt > ", createdAt);
+		query.put("status", status);
+		return search(query, cursorString, count);
+	}
+	
 	/**
 	 * Gets the tube by name.
 	 *
@@ -151,9 +170,6 @@ public class TubeDao extends AbstractDao<Tube> {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.ltu.yealtube.dao.AbstractDao#list(java.lang.String, java.lang.Integer)
-	 */
 	@Override
 	public CollectionResponse<Tube> list(String cursorString, Integer count) {
 		Query<Tube> query = getQuery().order("-createdAt");

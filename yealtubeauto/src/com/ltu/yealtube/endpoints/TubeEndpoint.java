@@ -1,5 +1,7 @@
 package com.ltu.yealtube.endpoints;
 
+import java.util.Date;
+
 import javax.annotation.Nullable;
 import javax.inject.Named;
 
@@ -173,5 +175,22 @@ public class TubeEndpoint {
 			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
 		TubeService service = TubeService.getInstance();
 		return service.searchTubes(field, status, cursorString, count);
+	}
+	
+	/**
+	 * Search by date.
+	 *
+	 * @param createAt the create at
+	 * @param status the status
+	 * @param cursorString the cursor string
+	 * @param count the count
+	 * @return the collection response
+	 * @throws CommonException the common exception
+	 */
+	@ApiMethod(name = "searchByDate", httpMethod = HttpMethod.GET, path = "searchByDate")
+	public CollectionResponse<Tube> searchByDate(@Named("createAt") Date createAt, @Named("status") Integer status,
+			@Nullable @Named("cursor") String cursorString, @Nullable @Named("count") Integer count) throws CommonException {
+		TubeService service = TubeService.getInstance();
+		return service.searchTubes(createAt, status, cursorString, count);
 	}
 }
