@@ -1,0 +1,252 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://yealtubecrontest.appspot.com/_ah/api",
+  "name" : "reportendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "discovery" : [ "PUBLIC" ],
+  "adapter" : {
+    "bns" : "https://yealtubecrontest.appspot.com/_ah/spi",
+    "deadline" : 65.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "ltu.com",
+  "ownerName" : "ltu.com",
+  "packagePath" : "yealtube.entity",
+  "methods" : {
+    "reportendpoint.removeReport" : {
+      "path" : "report/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.removeReport",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "reportendpoint.updateReport" : {
+      "path" : "report",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.updateReport",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "reportendpoint.listReport" : {
+      "path" : "report",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.listReport",
+      "request" : {
+        "parameters" : {
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "reportendpoint.insertReport" : {
+      "path" : "report",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.insertReport",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "reportendpoint.searchReports" : {
+      "path" : "searchReports",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.searchReports",
+      "request" : {
+        "parameters" : {
+          "querySearch" : {
+            "type" : "string",
+            "required" : false
+          },
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "count" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "reportendpoint.getReport" : {
+      "path" : "report/{id}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.ltu.yealtube.endpoints.ReportEndpoint.getReport",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "Report" : {
+        "id" : "Report",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "date" : {
+            "type" : "string"
+          },
+          "pendingCount" : {
+            "type" : "integer"
+          },
+          "sentCount" : {
+            "type" : "integer"
+          },
+          "unsentCount" : {
+            "type" : "integer"
+          },
+          "cancelledCount" : {
+            "type" : "integer"
+          },
+          "inWorkCount" : {
+            "type" : "integer"
+          },
+          "exceptionCount" : {
+            "type" : "integer"
+          },
+          "processCount" : {
+            "type" : "integer"
+          },
+          "modifiedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "CollectionResponse_Report" : {
+        "id" : "CollectionResponse_Report",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Report"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.ltu.yealtube.endpoints.ReportEndpoint.removeReport" : {
+      },
+      "com.ltu.yealtube.endpoints.ReportEndpoint.updateReport" : {
+        "request" : {
+          "$ref" : "Report"
+        },
+        "response" : {
+          "$ref" : "Report"
+        }
+      },
+      "com.ltu.yealtube.endpoints.ReportEndpoint.listReport" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Report"
+        }
+      },
+      "com.ltu.yealtube.endpoints.ReportEndpoint.insertReport" : {
+        "request" : {
+          "$ref" : "Report"
+        },
+        "response" : {
+          "$ref" : "Report"
+        }
+      },
+      "com.ltu.yealtube.endpoints.ReportEndpoint.searchReports" : {
+        "response" : {
+          "$ref" : "CollectionResponse_Report"
+        }
+      },
+      "com.ltu.yealtube.endpoints.ReportEndpoint.getReport" : {
+        "response" : {
+          "$ref" : "Report"
+        }
+      }
+    }
+  }
+}

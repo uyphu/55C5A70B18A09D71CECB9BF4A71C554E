@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
-<!-- 	<cron> -->
-<!-- 		<url>/cron/yealtubecron</url> -->
-<!-- 		<description>Automatically getting hot tubes</description> -->
-<!-- 		<schedule>every day 00:00</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/movie</url> -->
-<!-- 		<description>Automatically getting hot movies</description> -->
-<!-- 		<schedule>every day 00:00</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/removecron</url> -->
-<!-- 		<description>Automatically remove tube</description> -->
-<!-- 		<schedule>every day 00:00</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/statisticscron</url> -->
-<!-- 		<description>Automatically getting statistics</description> -->
-<!-- 		<schedule>every 2 hours</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/processcron</url> -->
-<!-- 		<description>Automatically process</description> -->
-<!-- 		<schedule>every 2 hours</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/approvecron</url> -->
-<!-- 		<description>Automatically approve</description> -->
-<!-- 		<schedule>every 2 hours</schedule> -->
-<!-- 	</cron> -->
-<!-- 	<cron> -->
-<!-- 		<url>/cron/playlistcron</url> -->
-<!-- 		<description>Automatically getting playlist</description> -->
-<!-- 		<schedule>every day 00:00</schedule> -->
-<!-- 	</cron> -->
+	<cron>
+		<url>/cron/yealtubecron</url>
+		<description>Automatically getting hot tubes</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
+		<url>/cron/movie</url>
+		<description>Automatically getting hot movies</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
+		<url>/cron/removecron</url>
+		<description>Automatically remove tube</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
+	<cron>
+		<url>/cron/statisticscron</url>
+		<description>Automatically getting statistics</description>
+		<schedule>every 2 hours</schedule>
+	</cron>
+	<cron>
+		<url>/cron/processcron</url>
+		<description>Automatically process</description>
+		<schedule>every 2 hours</schedule>
+	</cron>
+	<cron>
+		<url>/cron/approvecron</url>
+		<description>Automatically approve</description>
+		<schedule>every 2 hours</schedule>
+	</cron>
+	<cron>
+		<url>/cron/playlistcron</url>
+		<description>Automatically getting playlist</description>
+		<schedule>every day 00:00</schedule>
+	</cron>
 </cronentries>
